@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-CHANGE_THIS_TO_YOUR_OWN_48_CHAR_RANDOM_STRING"
 
 DEBUG = True                      # Turn OFF in production!
-ALLOWED_HOSTS = []                # e.g. ["yourdomain.com"] in prod
+ALLOWED_HOSTS = ['smart-parking-nrsg.onrender.com', 'localhost', '127.0.0.1']               # e.g. ["yourdomain.com"] in prod
 
 # ──────────────────────────────────────────────────────────────────────────
 # APPLICATIONS
