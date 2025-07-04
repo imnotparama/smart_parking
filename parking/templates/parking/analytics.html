@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analytics | Smart Parking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        .analytics-panel {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px 0 rgba(44,62,80,0.08);
+            padding: 28px 32px 18px 32px;
+            margin: 40px auto 32px auto;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: center;
+        }
+        .analytics-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: #f7fafd;
+            border-radius: 12px;
+            padding: 16px 22px;
+            min-width: 120px;
+            text-align: center;
+            box-shadow: 0 2px 8px 0 rgba(44,62,80,0.07);
+        }
+        .stat-label {
+            font-size: 0.95rem;
+            color: #7b8ca6;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2980b9;
+        }
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 30px auto 0 auto;
+        }
+        .back-link {
+            display: inline-block;
+            margin: 30px 0 0 0;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav class="sidebar">
+        <div class="sidebar-title">
+            <div class="sidebar-logo">
+                <span class="logo-circle">P</span>
+                <span>Smart Parking</span>
+            </div>
+        </div>
+        <ul>
+            <li><a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> Home</a></li>
+            <li><a href="{% url 'my_bookings' %}"><i class="fa-solid fa-clipboard-list"></i> My Bookings</a></li>
+            <li><a href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            <li class="active"><a href="{% url 'analytics' %}"><i class="fa-solid fa-chart-column"></i> Analytics</a></li>
+            <li><a href="#"><i class="fa-solid fa-circle-question"></i> Help <span class="soon">soon</span></a></li>
+        </ul>
+        <div class="sidebar-user">
+            <span><i class="fa-solid fa-user"></i> {{ user.username }}</span>
+        </div>
+    </nav>
+    <main class="main-content">
+        <div class="analytics-panel">
+            <h2 style="text-align:center; color:#34495e; font-weight:700;">
+                <i class="fa-solid fa-chart-column"></i> Analytics
+            </h2>
+            <div class="analytics-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Slots</div>
+                    <div class="stat-value">{{ total_slots }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Available</div>
+                    <div class="stat-value">{{ available_slots }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Occupied</div>
+                    <div class="stat-value">{{ occupied_slots }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Bookings</div>
+                    <div class="stat-value">{{ total_bookings }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Bookings Today</div>
+                    <div class="stat-value">{{ bookings_today }}</div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="slotChart"></canvas>
+            </div>
+            <a href="{% url 'home' %}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </main>
+</div>
+<script>
+    const ctx = document.getElementById('slotChart').getContext('2d');
+    const slotLabels = [
+        {% for s in slot_stats %}
+            "Slot {{ s.slot__number }}"{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+    const slotCounts = [
+        {% for s in slot_stats %}
+            {{ s.count }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: slotLabels,
+            datasets: [{
+                label: 'Bookings per Slot',
+                data: slotCounts,
+                backgroundColor: '#2980b9',
+                borderRadius: 8,
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+    });
+</script>
+</body>
+</html>
