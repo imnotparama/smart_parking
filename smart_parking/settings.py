@@ -18,8 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Replace this ASAP for production!
 SECRET_KEY = "django-insecure-CHANGE_THIS_TO_YOUR_OWN_48_CHAR_RANDOM_STRING"
 
-DEBUG = True                      # Turn OFF in production!
-ALLOWED_HOSTS = ['smart-parking-nrsg.onrender.com', 'localhost', '127.0.0.1']               # e.g. ["yourdomain.com"] in prod
+DEBUG = False                      # Turn OFF in production!
+ALLOWED_HOSTS = ['smart-parking-nrsg.onrender.com', 'localhost', '127.0.0.1']
 
 # ──────────────────────────────────────────────────────────────────────────
 # APPLICATIONS
@@ -42,7 +42,8 @@ INSTALLED_APPS = [
 # ──────────────────────────────────────────────────────────────────────────
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",      # must be BEFORE Auth
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # <-- Add this line!
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -58,9 +59,8 @@ ROOT_URLCONF = "smart_parking.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        # If you want global template dirs, add them here:
         "DIRS": [],
-        "APP_DIRS": True,                 # crucial for app templates
+        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -106,19 +106,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # INTERNATIONALIZATION
 # ──────────────────────────────────────────────────────────────────────────
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = "Asia/Kolkata"        # adjust if needed
+TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
 
 # ──────────────────────────────────────────────────────────────────────────
 # STATIC & MEDIA
 # ──────────────────────────────────────────────────────────────────────────
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]        # <project>/static/
 STATIC_ROOT = BASE_DIR / "staticfiles"          # for collectstatic (prod)
 
-MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"                 # user-uploaded files
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # ──────────────────────────────────────────────────────────────────────────
 # DEFAULT PRIMARY KEY TYPE
