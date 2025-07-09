@@ -1,187 +1,78 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Smart Parking Booking</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body ontouchstart="">
-<div class="container">
-    <nav class="sidebar">
-        <div class="sidebar-title">
-            <div class="sidebar-logo">
-                <span class="logo-circle">P</span>
-                <span>Smart Parking</span>
-            </div>
-        </div>
-        <ul>
-            <li class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
-                <a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> Home</a>
-            </li>
-            {% if user.is_authenticated %}
-                <li class="{% if request.resolver_match.url_name == 'my_bookings' %}active{% endif %}">
-                    <a href="{% url 'my_bookings' %}"><i class="fa-solid fa-clipboard-list"></i> My Bookings</a>
-                </li>
-                <li>
-                    <a href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-                </li>
-            {% else %}
-                <li class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}">
-                    <a href="{% url 'login' %}"><i class="fa-solid fa-key"></i> Login</a>
-                </li>
-                <li class="{% if request.resolver_match.url_name == 'signup' %}active{% endif %}">
-                    <a href="{% url 'signup' %}"><i class="fa-solid fa-pen"></i> Sign Up</a>
-                </li>
-            {% endif %}
-            <li class="{% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
-                <a href="{% url 'analytics' %}"><i class="fa-solid fa-chart-column"></i> Analytics</a>
-            </li>
-            <li>
-                <a href="#"><i class="fa-solid fa-circle-question"></i> Help <span class="soon">soon</span></a>
-            </li>
-        </ul>
-        {% if user.is_authenticated %}
-            <div class="sidebar-user">
-                <span><i class="fa-solid fa-user"></i> {{ user.username }}</span>
-            </div>
+{% extends "parking/base.html" %}
+{% block title %}Home | Smart Parking Analysis{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-car-icon" tabindex="0"><i class="fa-solid fa-car-side"></i></div>
+  <h1 class="hero-title">Smart Parking Slot Selection</h1>
+  <div class="badges">
+    <span class="badge new">NEW</span>
+    <span class="badge secure"><i class="fa-solid fa-lock"></i> Secure</span>
+    <span class="badge fast"><i class="fa-solid fa-bolt"></i> Fast</span>
+  </div>
+
+  {% if user.is_authenticated %}
+    <article class="dashboard-panel glass-card">
+      <div class="dashboard-greeting">
+        <p>Welcome, <strong>{{ user.username }}</strong> 👋</p>
+        <p class="greet-sub">Ready to park smart today?</p>
+      </div>
+      <div class="dashboard-stats">
+        <div class="stat-card"><span>Total Slots</span><span class="stat-value">{{ slots|length }}</span></div>
+        <div class="stat-card"><span>Available</span><span class="stat-value available">{{ available_count }}</span></div>
+        <div class="stat-card"><span>Occupied</span><span class="stat-value occupied">{{ occupied_count }}</span></div>
+        {% if my_booking %}
+          <div class="stat-card yours"><span>Your Slot</span><span class="stat-value">#{{ my_booking.slot.number }}</span></div>
         {% endif %}
-    </nav>
+      </div>
+    </article>
+  {% endif %}
 
-    <main class="main-content">
-        <!-- Main hero car at the top -->
-        <div class="hero-car-glass">
-            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f697.svg" alt="Car" class="hero-car">
-        </div>
+  {% if user.is_authenticated and my_booking %}
+    <div class="my-booking glass-card">
+      📍 <strong>Slot {{ my_booking.slot.number }}</strong> booked
+      {% if minutes_parked is not None %}
+        <span class="muted">
+          • {{ minutes_parked }} min • ₹{{ parking_cost_per_minute }}/min •
+          <b>Total ₹{{ total_cost }}</b>
+        </span>
+      {% endif %}
+      <a href="{% url 'cancel_booking' my_booking.slot.id %}" class="btn btn-danger">Cancel</a>
+    </div>
+  {% endif %}
 
-        <h1>
-            <i class="fa-solid fa-car-side"></i>
-            <span>Smart Parking Slot Selection</span>
-        </h1>
+  <div class="legend glass-card">
+    <span><span class="slot-icon-bg available"><i class="fa-solid fa-car"></i></span> Available</span>
+    <span><span class="slot-icon-bg yours"><i class="fa-solid fa-car"></i></span> Yours</span>
+    <span><span class="slot-icon-bg occupied"><i class="fa-solid fa-car"></i></span> Occupied</span>
+  </div>
 
-        {% if user.is_authenticated %}
-        <div class="dashboard-panel glass-card">
-            <div class="dashboard-greeting">
-                <div>
-                    <div class="greet">Welcome, <b>{{ user.username }}</b>!</div>
-                    <div class="greet-sub">Ready to park smart today?</div>
-                </div>
-            </div>
-            <div class="dashboard-stats">
-                <div class="stat-card glass-card">
-                    <div class="stat-label">Total Slots</div>
-                    <div class="stat-value">{{ slots|length }}</div>
-                </div>
-                <div class="stat-card glass-card">
-                    <div class="stat-label">Available</div>
-                    <div class="stat-value available">{{ available_count }}</div>
-                </div>
-                <div class="stat-card glass-card">
-                    <div class="stat-label">Occupied</div>
-                    <div class="stat-value occupied">{{ occupied_count }}</div>
-                </div>
-                {% if my_booking %}
-                <div class="stat-card yours glass-card">
-                    <div class="stat-label">Your Slot</div>
-                    <div class="stat-value">#{{ my_booking.slot.number }}</div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if messages %}
-            <div>
-                {% for message in messages %}
-                    <p class="message {{ message.tags }}">{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        {% if user.is_authenticated and my_booking %}
-            <div class="my-booking glass-card">
-                📍 You have booked <strong>Slot {{ my_booking.slot.number }}</strong>
-                <br>
-                {% if minutes_parked is not None %}
-                    <span style="color:#7b8ca6;">
-                        Time Parked: <b>{{ minutes_parked }}</b> min &nbsp;|&nbsp;
-                        Cost per min: <b>₹{{ parking_cost_per_minute }}</b> &nbsp;|&nbsp;
-                        <span style="color:#2980b9;">Total: <b>₹{{ total_cost }}</b></span>
-                    </span>
-                {% endif %}
-                <br>
-                <a href="{% url 'cancel_booking' my_booking.slot.id %}" class="cancel-btn" style="margin-top:8px;display:inline-block;">Cancel</a>
-            </div>
-        {% endif %}
-
-        <div class="legend glass-card">
-            <span>
-                <span class="slot-icon-bg available"><i class="fa-solid fa-car slot-car-icon"></i></span>
-                Available
-            </span>
-            <span>
-                <span class="slot-icon-bg yours"><i class="fa-solid fa-car slot-car-icon"></i></span>
-                Yours
-            </span>
-            <span>
-                <span class="slot-icon-bg occupied"><i class="fa-solid fa-car slot-car-icon"></i></span>
-                Occupied
-            </span>
-        </div>
-
-        <div class="parking-grid">
-            {% for slot in slots %}
-                <form method="POST"
-                      action="{% if slot.is_available %}{% url 'book_slot' slot.id %}
-                              {% elif user.is_authenticated and slot.booking_set.first.user == user %}
-                                  {% url 'cancel_booking' slot.id %}
-                              {% else %}#{% endif %}">
-                    {% csrf_token %}
-                    <button 
-                        class="parking-slot touch-ripple glass-card
-                            {% if slot.is_available %}available
-                            {% elif user.is_authenticated and slot.booking_set.first.user == user %}yours
-                            {% else %}occupied{% endif %}"
-
-                        {% if not slot.is_available %}
-                            {% if not user.is_authenticated %}
-                                disabled
-                            {% elif slot.booking_set.first.user != user %}
-                                disabled
-                            {% endif %}
-                        {% endif %}
-
-                        data-tooltip="{% if slot.is_available %}Click to Book
-                                      {% elif user.is_authenticated and slot.booking_set.first.user == user %}Click to Cancel
-                                      {% else %}Occupied by another user{% endif %}"
-                    >
-                        <span class="slot-icon-bg">
-                            <i class="fa-solid fa-car slot-car-icon"></i>
-                        </span>
-                        <span class="slot-label">Slot {{ slot.number }}</span>
-                    </button>
-                </form>
-            {% endfor %}
-        </div>
-        <!-- Small, subtle car illustration in the background -->
-        <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f697.svg" alt="" class="bg-illustration">
-    </main>
-</div>
-<script>
-    // Touch ripple effect for slot buttons
-    document.querySelectorAll('.touch-ripple').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            let ripple = document.createElement('span');
-            ripple.className = 'ripple';
-            ripple.style.left = (e.offsetX || e.touches?.[0]?.clientX || 0) + 'px';
-            ripple.style.top = (e.offsetY || e.touches?.[0]?.clientY || 0) + 'px';
-            this.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-        });
-    });
-</script>
-</body>
-</html>
+  <div class="parking-grid" role="grid">
+    {% for slot in slots %}
+      <form method="post"
+            action="{% if slot.is_available %}{% url 'book_slot' slot.id %}
+                    {% elif user.is_authenticated and slot.booking_set.first.user == user %}
+                      {% url 'cancel_booking' slot.id %}
+                    {% else %}#{% endif %}">
+        {% csrf_token %}
+        <button type="submit"
+          class="parking-slot touch-ripple glass-card
+                 {% if slot.is_available %}available
+                 {% elif user.is_authenticated and slot.booking_set.first.user == user %}yours
+                 {% else %}occupied{% endif %}"
+          {% if not slot.is_available and not user.is_authenticated %}
+            disabled aria-disabled="true"
+          {% elif not slot.is_available and user.is_authenticated and slot.booking_set.first.user != user %}
+            disabled aria-disabled="true"
+          {% endif %}
+          aria-label="{% if slot.is_available %}Slot {{ slot.number }} available. Click to book.
+                       {% elif user.is_authenticated and slot.booking_set.first.user == user %}Slot {{ slot.number }} booked by you. Click to cancel.
+                       {% else %}Slot {{ slot.number }} occupied.{% endif %}">
+          <span class="slot-icon-bg"><i class="fa-solid fa-car"></i></span>
+          <span class="slot-label">Slot {{ slot.number }}</span>
+        </button>
+      </form>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

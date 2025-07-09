@@ -10,4 +10,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('signup/', views.signup, name='signup'),
     path('analytics/', views.analytics, name='analytics'),  # <--- THIS LINE IS REQUIRED!
+    path('help/', views.help_page, name='help'),
 ]

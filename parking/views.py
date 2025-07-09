@@ -122,3 +122,5 @@ def analytics(request):
         'bookings_today': bookings_today,
         'slot_stats': slot_stats,
     })
+def help_page(request):
+    return render(request, 'parking/help.html')

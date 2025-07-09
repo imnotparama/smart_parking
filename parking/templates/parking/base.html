@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ request.COOKIES.theme|default:'light' }}">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Smart Parking Analysis{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light"><i class="fa-solid fa-moon"></i></button>
+  <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+  <div class="container">
+    {% include "parking/partials/sidebar.html" %}
+    <main id="mainContent" class="main-content" tabindex="-1">
+      {% include "parking/partials/messages.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script defer src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

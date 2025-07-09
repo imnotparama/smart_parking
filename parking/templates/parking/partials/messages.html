@@ -1,0 +1,7 @@
+{% if messages %}
+  <section class="django-messages" role="alert" aria-live="polite">
+    {% for message in messages %}
+      <p class="message {{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+  </section>
+{% endif %}

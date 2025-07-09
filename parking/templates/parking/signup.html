@@ -1,47 +1,15 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sign Up | Smart Parking</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-<div class="container">
-    <nav class="sidebar">
-        <div class="sidebar-title">
-            <div class="sidebar-logo">
-                <span class="logo-circle">P</span>
-                <span>Smart Parking</span>
-            </div>
-        </div>
-        <ul>
-            <li><a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> Home</a></li>
-            <li><a href="{% url 'login' %}"><i class="fa-solid fa-key"></i> Login</a></li>
-            <li class="active"><a href="{% url 'signup' %}"><i class="fa-solid fa-pen"></i> Sign Up</a></li>
-        </ul>
-    </nav>
-    <main class="main-content">
-        <div class="auth-card">
-            <h2><i class="fa-solid fa-pen"></i> Sign Up</h2>
-            <form method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="form-group">
-                        {{ field.label_tag }}
-                        {{ field }}
-                        {% if field.errors %}
-                            <div class="form-error">{{ field.errors|striptags }}</div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-                <button type="submit" class="btn-main">Sign Up</button>
-            </form>
-            <p class="auth-link">Already have an account? <a href="{% url 'login' %}">Login</a></p>
-        </div>
-    </main>
-</div>
-</body>
-</html>
+{% extends "parking/base.html" %}
+{% block title %}Sign Up | Smart Parking Analysis{% endblock %}
+{% block content %}
+<article class="auth-card glass-card">
+  <h2><i class="fa-solid fa-pen"></i> Sign Up</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">{{ field.label_tag }}{{ field }}</div>
+    {% endfor %}
+    <button class="btn btn-primary">Sign Up</button>
+  </form>
+  <p class="auth-link">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+</article>
+{% endblock %}
