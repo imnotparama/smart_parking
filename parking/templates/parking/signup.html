@@ -1,6 +1,5 @@
 {% extends "parking/base.html" %}
 {% block title %}Sign Up | Smart Parking Analysis{% endblock %}
-<<<<<<< HEAD
 
 {% block content %}
 <div class="auth-container">
@@ -10,7 +9,6 @@
 
     <form method="post" novalidate>
       {% csrf_token %}
-
       {% for field in form %}
         <div class="form-group">
           {{ field.label_tag }}
@@ -31,25 +29,10 @@
           {% endif %}
         </div>
       {% endfor %}
-
       <button type="submit" class="btn btn-primary">Sign Up</button>
     </form>
 
     <p class="auth-link">Already have an account? <a href="{% url 'login' %}">Log In</a></p>
   </article>
 </div>
-=======
-{% block content %}
-<article class="auth-card glass-card">
-  <h2><i class="fa-solid fa-pen"></i> Sign Up</h2>
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {% for field in form %}
-      <div class="form-group">{{ field.label_tag }}{{ field }}</div>
-    {% endfor %}
-    <button class="btn btn-primary">Sign Up</button>
-  </form>
-  <p class="auth-link">Already have an account? <a href="{% url 'login' %}">Login</a></p>
-</article>
->>>>>>> 18187760977c2cd45c2e06343dbdba7c88205fea
 {% endblock %}

@@ -1,0 +1,115 @@
+{% extends "parking/base.html" %}
+{% block title %}Admin Dashboard | Smart Parking Analysis{% endblock %}
+
+{% block content %}
+<div class="page-container admin-dashboard">
+    <div class="dashboard-header">
+        <h1 class="page-title"><i class="fa-solid fa-user-shield"></i> Admin Dashboard</h1>
+    </div>
+    
+    <!-- Stat Cards -->
+    <div class="stat-cards-grid">
+        <div class="stat-card-pro glass-card">
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-info">
+                <h4>Total Users</h4>
+                <p>{{ total_users }}</p>
+            </div>
+        </div>
+        <div class="stat-card-pro glass-card">
+            <div class="stat-icon"><i class="fa-solid fa-car"></i></div>
+            <div class="stat-info">
+                <h4>Total Slots</h4>
+                <p>{{ total_slots }}</p>
+            </div>
+        </div>
+        <div class="stat-card-pro glass-card">
+            <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
+            <div class="stat-info">
+                <h4>Total Bookings</h4>
+                <p>{{ total_bookings }}</p>
+            </div>
+        </div>
+        <div class="stat-card-pro glass-card">
+            <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div class="stat-info">
+                <h4>Total Revenue</h4>
+                <p>₹{{ total_revenue|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity & New Users Tables -->
+    <div class="dashboard-tables">
+        <div class="table-container glass-card">
+            <h3>Recent Bookings</h3>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead><tr><th>User</th><th>Slot</th><th>Booked At</th></tr></thead>
+                    <tbody>
+                        {% for booking in recent_bookings %}
+                        <tr>
+                            <td>{{ booking.user.username }}</td>
+                            <td>{{ booking.slot }}</td>
+                            <td>{{ booking.booked_at|timesince }} ago</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="no-data-cell">No bookings yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="table-container glass-card">
+            <h3>Newest Users</h3>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead><tr><th>Username</th><th>Email</th><th>Date Joined</th></tr></thead>
+                    <tbody>
+                        {% for u in recent_users %}
+                        <tr>
+                            <td>{{ u.username }}</td>
+                            <td>{{ u.email|default:"No email" }}</td>
+                            <td>{{ u.date_joined|date:"d M, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="no-data-cell">No new users yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Top Booking Users Table -->
+    <div class="table-container glass-card" style="margin-top: 24px;">
+        <h3><i class="fa-solid fa-crown"></i> Top Booking Users</h3>
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Total Bookings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in top_booking_users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email|default:"No email" }}</td>
+                        <td><strong>{{ user.booking_count }}</strong></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="no-data-cell">No users have made bookings yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top: 32px; font-weight: bold;">
+        <i class="fa-solid fa-arrow-left"></i> Back to Home
+    </a>
+</div>
+{% endblock %}

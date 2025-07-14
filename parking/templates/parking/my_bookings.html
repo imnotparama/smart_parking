@@ -1,75 +1,53 @@
 {% extends "parking/base.html" %}
 {% block title %}My Bookings | Smart Parking Analysis{% endblock %}
-<<<<<<< HEAD
 
 {% block content %}
 <div class="page-container">
-    <h2 class="page-title"><i class="fa-solid fa-clipboard-list"></i> My Bookings</h2>
+  <h2 class="page-title"><i class="fa-solid fa-clipboard-list"></i> My Bookings</h2>
 
-    {% if bookings %}
-      <div class="table-container glass-card">
-        <table class="table">
-            <thead>
-              <tr>
-                <th>Slot</th>
-                <th>Floor</th>
-                <th>Vehicle Number</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Duration</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for b in bookings %}
-                <tr>
-                  <td>{{ b.slot.section }}{{ b.slot.number }}</td>
-                  <td>{{ b.slot.floor }}</td>
-                  <td>{{ b.vehicle_number }}</td>
-                  <td>{{ b.parking_date|date:"d M, Y" }}</td>
-                  <td>{{ b.start_time|time:"H:i" }}</td>
-                  <td>{{ b.duration_hours }} Hours</td>
-                  <td>
-                    <!-- This form sends a POST request with the correct booking ID -->
-                    <form method="post" action="{% url 'cancel_booking' b.id %}" style="margin:0;">
-                      {% csrf_token %}
-                      <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
-                    </form>
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-        </table>
-      </div>
-    {% else %}
-      <div class="no-data glass-card">
-        <p>You have no active bookings.</p>
-        <p>Go ahead and book your first slot!</p>
-      </div>
-    {% endif %}
+  {% if bookings %}
+    <div class="table-container glass-card">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Slot</th>
+            <th>Floor</th>
+            <th>Vehicle Number</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Duration</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bookings %}
+            <tr>
+              <td>{{ b.slot.section }}{{ b.slot.number }}</td>
+              <td>{{ b.slot.floor }}</td>
+              <td>{{ b.vehicle_number }}</td>
+              <td>{{ b.parking_date|date:"d M, Y" }}</td>
+              <td>{{ b.start_time|time:"H:i" }}</td>
+              <td>{{ b.duration_hours }} Hours</td>
+              <td>
+                <form method="post" action="{% url 'cancel_booking' b.id %}" style="margin:0;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="no-data glass-card">
+      <p>You have no active bookings.</p>
+      <p>Go ahead and book your first slot!</p>
+    </div>
+  {% endif %}
 
-    <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top:24px; font-weight:bold;">
-        <i class="fa-solid fa-arrow-left"></i> Back to Home
-    </a>
+  <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top:24px; font-weight:bold;">
+    <i class="fa-solid fa-arrow-left"></i> Back to Home
+  </a>
 </div>
-=======
-{% block content %}
-<h2 class="page-title"><i class="fa-solid fa-clipboard-list"></i> My Bookings</h2>
-{% if bookings %}
-  <table class="table glass-card">
-    <thead><tr><th>Slot</th><th>Booked At</th><th>Action</th></tr></thead>
-    <tbody>
-      {% for b in bookings %}
-        <tr>
-          <td>{{ b.slot.number }}</td>
-          <td>{{ b.booked_at|date:"Y-m-d H:i" }}</td>
-          <td><a href="{% url 'cancel_booking' b.slot.id %}" class="btn btn-danger btn-sm">Cancel</a></td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% else %}
-  <p class="no-data">You have no active bookings.</p>
-{% endif %}
->>>>>>> 18187760977c2cd45c2e06343dbdba7c88205fea
 {% endblock %}

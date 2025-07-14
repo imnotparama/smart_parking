@@ -58,11 +58,11 @@ ROOT_URLCONF = "smart_parking.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-<<<<<<< HEAD
+
         "DIRS": [BASE_DIR / "templates"],
-=======
+
         "DIRS": [BASE_DIR / "templates"],  # <--- Add this for custom template dirs
->>>>>>> 18187760977c2cd45c2e06343dbdba7c88205fea
+
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
