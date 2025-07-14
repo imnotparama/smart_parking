@@ -32,10 +32,15 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 class ParkingSlot(models.Model):
+<<<<<<< HEAD
     section = models.CharField(max_length=1, default='A')
     number = models.IntegerField()
     floor = models.IntegerField(default=1)
     price = models.DecimalField(max_digits=6, decimal_places=2, default=50.00)
+=======
+    number = models.IntegerField()
+    floor = models.IntegerField()  # or models.CharField(max_length=10) for names like "G", "1", "2"
+>>>>>>> 18187760977c2cd45c2e06343dbdba7c88205fea
     is_available = models.BooleanField(default=True)
     is_handicap = models.BooleanField(default=False)
     is_ev_charging = models.BooleanField(default=False)
@@ -47,6 +52,8 @@ class ParkingSlot(models.Model):
     def __str__(self):
         return f"F{self.floor} - {self.section}{self.number}"
 
+    def __str__(self):
+        return f"Slot {self.number} (Floor {self.floor})"
 class Booking(models.Model):
     slot = models.ForeignKey(ParkingSlot, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

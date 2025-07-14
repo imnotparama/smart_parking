@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # parking/admin.py
 from django.contrib import admin
 from .models import ParkingSlot, Booking, UserProfile
@@ -19,3 +20,9 @@ class BookingAdmin(admin.ModelAdmin):
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone_number')
+=======
+from django.contrib import admin
+from .models import ParkingSlot
+
+admin.site.register(ParkingSlot)
+>>>>>>> 18187760977c2cd45c2e06343dbdba7c88205fea

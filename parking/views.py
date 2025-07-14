@@ -146,6 +146,7 @@ def analytics(request):
         'occupied_slots': occupied_slots,
         'total_bookings': total_bookings,
         'bookings_today': bookings_today,
+<<<<<<< HEAD
         'total_revenue': total_revenue, # You can add this to your template
         'slot_stats': slot_stats, # For the Chart.js
         'page_title': 'Analytics Dashboard'
@@ -327,3 +328,9 @@ def cancel_booking(request, booking_id):
     # If it's a GET request, just redirect to be safe
     return redirect('my_bookings')
 
+=======
+        'slot_stats': slot_stats,
+    })
+def help_page(request):
+    return render(request, 'parking/help.html')
+>>>>>>> 18187760977c2cd45c2e06343dbdba7c88205fea

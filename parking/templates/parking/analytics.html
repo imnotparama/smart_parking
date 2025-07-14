@@ -1,4 +1,5 @@
 {% extends "parking/base.html" %}
+<<<<<<< HEAD
 {% block title %}Analytics Dashboard{% endblock %}
 
 {% block content %}
@@ -126,5 +127,39 @@
             }
         });
     }
+=======
+{% block title %}Analytics | Smart Parking Analysis{% endblock %}
+{% block content %}
+<article class="analytics-panel glass-card">
+  <h2 class="page-title"><i class="fa-solid fa-chart-column"></i> Analytics</h2>
+  <div class="analytics-stats">
+    <div class="stat-card"><span>Total Slots</span><span class="stat-value">{{ total_slots }}</span></div>
+    <div class="stat-card"><span>Available</span><span class="stat-value">{{ available_slots }}</span></div>
+    <div class="stat-card"><span>Occupied</span><span class="stat-value">{{ occupied_slots }}</span></div>
+    <div class="stat-card"><span>Total Bookings</span><span class="stat-value">{{ total_bookings }}</span></div>
+    <div class="stat-card"><span>Today</span><span class="stat-value">{{ bookings_today }}</span></div>
+  </div>
+  <div class="chart-container"><canvas id="slotChart" aria-label="Bookings per slot"></canvas></div>
+  <a href="{% url 'home' %}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+</article>
+{% endblock %}
+{% block extra_js %}
+<script>
+const ctx = document.getElementById('slotChart');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: [{% for s in slot_stats %}'Slot {{ s.slot__number }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+    datasets: [{ data: [{% for s in slot_stats %}{{ s.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                 borderRadius: 6,
+                 backgroundColor: getComputedStyle(document.documentElement)
+                                  .getPropertyValue('--primary') }]
+  },
+  options: {
+    plugins:{legend:{display:false}},
+    scales:{y:{beginAtZero:true, ticks:{stepSize:1}}}
+  }
+});
+>>>>>>> 18187760977c2cd45c2e06343dbdba7c88205fea
 </script>
 {% endblock %}

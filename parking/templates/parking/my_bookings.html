@@ -1,5 +1,6 @@
 {% extends "parking/base.html" %}
 {% block title %}My Bookings | Smart Parking Analysis{% endblock %}
+<<<<<<< HEAD
 
 {% block content %}
 <div class="page-container">
@@ -51,4 +52,24 @@
         <i class="fa-solid fa-arrow-left"></i> Back to Home
     </a>
 </div>
+=======
+{% block content %}
+<h2 class="page-title"><i class="fa-solid fa-clipboard-list"></i> My Bookings</h2>
+{% if bookings %}
+  <table class="table glass-card">
+    <thead><tr><th>Slot</th><th>Booked At</th><th>Action</th></tr></thead>
+    <tbody>
+      {% for b in bookings %}
+        <tr>
+          <td>{{ b.slot.number }}</td>
+          <td>{{ b.booked_at|date:"Y-m-d H:i" }}</td>
+          <td><a href="{% url 'cancel_booking' b.slot.id %}" class="btn btn-danger btn-sm">Cancel</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="no-data">You have no active bookings.</p>
+{% endif %}
+>>>>>>> 18187760977c2cd45c2e06343dbdba7c88205fea
 {% endblock %}

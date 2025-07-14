@@ -1,5 +1,6 @@
 {% extends "parking/base.html" %}
 {% block title %}Login | Smart Parking Analysis{% endblock %}
+<<<<<<< HEAD
 
 {% block content %}
 <div class="auth-container">
@@ -29,4 +30,17 @@
     <p class="auth-link">No account? <a href="{% url 'signup' %}">Sign up</a></p>
   </article>
 </div>
+=======
+{% block content %}
+<article class="auth-card glass-card">
+  <h2><i class="fa-solid fa-key"></i> Login</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-group">{{ form.username.label_tag }}{{ form.username }}</div>
+    <div class="form-group">{{ form.password.label_tag }}{{ form.password }}</div>
+    <button class="btn btn-primary">Login</button>
+  </form>
+  <p class="auth-link">No account? <a href="{% url 'signup' %}">Sign up</a></p>
+</article>
+>>>>>>> 18187760977c2cd45c2e06343dbdba7c88205fea
 {% endblock %}

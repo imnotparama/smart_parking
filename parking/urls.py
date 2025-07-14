@@ -3,6 +3,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+<<<<<<< HEAD
     path("", views.home, name="home"),
     path("book/", views.book_slot, name="book_slot"),
     path("cancel/<int:booking_id>/", views.cancel_booking, name="cancel_booking"),
@@ -23,4 +24,15 @@ urlpatterns = [
     
     # URL for admin analytics
     path("admin-analytics/", views.admin_analytics_view, name="admin_analytics"),
+=======
+    path('', views.home, name='home'),
+    path('book/<int:slot_id>/', views.book_slot, name='book_slot'),
+    path('cancel/<int:slot_id>/', views.cancel_booking, name='cancel_booking'),
+    path('my-bookings/', views.my_bookings, name='my_bookings'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('signup/', views.signup, name='signup'),
+    path('analytics/', views.analytics, name='analytics'),  # <--- THIS LINE IS REQUIRED!
+    path('help/', views.help_page, name='help'),
+>>>>>>> 18187760977c2cd45c2e06343dbdba7c88205fea
 ]
