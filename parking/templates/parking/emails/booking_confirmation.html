@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f4f7f9; color: #212529; }
+        .container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+        .header { text-align: center; border-bottom: 1px solid #dee2e6; padding-bottom: 24px; margin-bottom: 24px; }
+        .header h1 { color: #6a11cb; }
+        .booking-details { margin-bottom: 24px; }
+        .booking-details p { margin: 8px 0; }
+        .footer { text-align: center; color: #6c757d; font-size: 0.9rem; margin-top: 24px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Booking Confirmed!</h1>
+            <p>Smart Parking Analysis</p>
+        </div>
+        <div class="booking-details">
+            <p>Hi <strong>{{ user.username }}</strong>,</p>
+            <p>Your parking slot has been successfully booked. Here are your details:</p>
+            <ul>
+                <li><strong>Slot:</strong> {{ booking.slot }}</li>
+                <li><strong>Vehicle Number:</strong> {{ booking.vehicle_number }}</li>
+                <li><strong>Date:</strong> {{ booking.parking_date|date:"d M, Y" }}</li>
+                <li><strong>Time:</strong> {{ booking.start_time|time:"H:i A" }}</li>
+                <li><strong>Duration:</strong> {{ booking.duration_hours }} Hours</li>
+            </ul>
+        </div>
+        <div class="footer">
+            <p>Thank you for using our service. You can manage your bookings on your profile page.</p>
+        </div>
+    </div>
+</body>
+</html>

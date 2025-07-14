@@ -1,150 +1,130 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Analytics | Smart Parking</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <style>
-        .analytics-panel {
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 4px 24px 0 rgba(44,62,80,0.08);
-            padding: 28px 32px 18px 32px;
-            margin: 40px auto 32px auto;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            align-items: center;
-        }
-        .analytics-stats {
-            display: flex;
-            gap: 24px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-        .stat-card {
-            background: #f7fafd;
-            border-radius: 12px;
-            padding: 16px 22px;
-            min-width: 120px;
-            text-align: center;
-            box-shadow: 0 2px 8px 0 rgba(44,62,80,0.07);
-        }
-        .stat-label {
-            font-size: 0.95rem;
-            color: #7b8ca6;
-            margin-bottom: 4px;
-        }
-        .stat-value {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #2980b9;
-        }
-        .chart-container {
-            width: 100%;
-            max-width: 600px;
-            margin: 30px auto 0 auto;
-        }
-        .back-link {
-            display: inline-block;
-            margin: 30px 0 0 0;
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <nav class="sidebar">
-        <div class="sidebar-title">
-            <div class="sidebar-logo">
-                <span class="logo-circle">P</span>
-                <span>Smart Parking</span>
+{% extends "parking/base.html" %}
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="analytics-dashboard">
+    <div class="dashboard-header">
+        <h1 class="page-title">Parking Analytics</h1>
+        <a href="{% url 'home' %}" class="btn btn-secondary">&larr; Back to Home</a>
+    </div>
+    
+    <!-- Stat Cards -->
+    <div class="stat-cards-grid">
+        <div class="stat-card-pro">
+            <div class="stat-info">
+                <h4>Total Bookings Today</h4>
+                <p>{{ total_bookings_today }}</p>
+                <span class="trend-up">+12% from yesterday</span>
             </div>
+            <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
         </div>
-        <ul>
-            <li><a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> Home</a></li>
-            <li><a href="{% url 'my_bookings' %}"><i class="fa-solid fa-clipboard-list"></i> My Bookings</a></li>
-            <li><a href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
-            <li class="active"><a href="{% url 'analytics' %}"><i class="fa-solid fa-chart-column"></i> Analytics</a></li>
-            <li><a href="#"><i class="fa-solid fa-circle-question"></i> Help <span class="soon">soon</span></a></li>
-        </ul>
-        <div class="sidebar-user">
-            <span><i class="fa-solid fa-user"></i> {{ user.username }}</span>
-        </div>
-    </nav>
-    <main class="main-content">
-        <div class="analytics-panel">
-            <h2 style="text-align:center; color:#34495e; font-weight:700;">
-                <i class="fa-solid fa-chart-column"></i> Analytics
-            </h2>
-            <div class="analytics-stats">
-                <div class="stat-card">
-                    <div class="stat-label">Total Slots</div>
-                    <div class="stat-value">{{ total_slots }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Available</div>
-                    <div class="stat-value">{{ available_slots }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Occupied</div>
-                    <div class="stat-value">{{ occupied_slots }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Bookings</div>
-                    <div class="stat-value">{{ total_bookings }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Bookings Today</div>
-                    <div class="stat-value">{{ bookings_today }}</div>
-                </div>
+        <div class="stat-card-pro">
+            <div class="stat-info">
+                <h4>Revenue Today</h4>
+                <p>₹{{ revenue_today }}</p>
+                <span class="trend-up">+8% from yesterday</span>
             </div>
-            <div class="chart-container">
-                <canvas id="slotChart"></canvas>
-            </div>
-            <a href="{% url 'home' %}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+            <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
         </div>
-    </main>
+        <div class="stat-card-pro">
+            <div class="stat-info">
+                <h4>Average Utilization</h4>
+                <p>{{ average_utilization }}%</p>
+                <span class="trend-up">+5% from yesterday</span>
+            </div>
+            <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+        </div>
+        <div class="stat-card-pro">
+            <div class="stat-info">
+                <h4>Peak Hour Occupancy</h4>
+                <p>{{ peak_occupancy }}%</p>
+                <span class="trend-up">+2% from yesterday</span>
+            </div>
+            <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+        </div>
+    </div>
+
+    <!-- Chart & Table Grid -->
+    <div class="chart-grid">
+        <div class="chart-container glass-card">
+            <h4>Hourly Booking Pattern</h4>
+            <canvas id="hourlyChart"></canvas>
+        </div>
+        <div class="chart-container glass-card">
+            <h4>Weekly Utilization Trend</h4>
+            <canvas id="weeklyChart"></canvas>
+        </div>
+        <div class="chart-container glass-card">
+            <h4>Bookings by Location</h4>
+            <canvas id="locationChart"></canvas>
+        </div>
+        <div class="table-container glass-card">
+            <h4>Top Performing Locations</h4>
+            <table class="table">
+                <thead><tr><th>Location</th><th>Bookings</th><th>Utilization</th></tr></thead>
+                <tbody>
+                    <tr><td>Central Mall Parking</td><td>456</td><td>95%</td></tr>
+                    <tr><td>Business Hub Complex</td><td>389</td><td>88%</td></tr>
+                    <tr><td>Shopping Complex</td><td>298</td><td>75%</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
 <script>
-    const ctx = document.getElementById('slotChart').getContext('2d');
-    const slotLabels = [
-        {% for s in slot_stats %}
-            "Slot {{ s.slot__number }}"{% if not forloop.last %},{% endif %}
-        {% endfor %}
-    ];
-    const slotCounts = [
-        {% for s in slot_stats %}
-            {{ s.count }}{% if not forloop.last %},{% endif %}
-        {% endfor %}
-    ];
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: slotLabels,
-            datasets: [{
-                label: 'Bookings per Slot',
-                data: slotCounts,
-                backgroundColor: '#2980b9',
-                borderRadius: 8,
-            }]
-        },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
-        }
-    });
+    // Placeholder Chart.js initialization
+    // You will need to pass the real data from your view to these charts.
+    const hourlyCtx = document.getElementById('hourlyChart');
+    if (hourlyCtx) {
+        new Chart(hourlyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['06-08', '08-10', '10-12', '12-14', '14-16', '16-18', '18-20', '20-22'],
+                datasets: [{
+                    label: 'Bookings',
+                    data: [80, 120, 80, 90, 75, 130, 160, 80],
+                    backgroundColor: 'rgba(0, 255, 153, 0.6)',
+                    borderColor: 'rgba(0, 255, 153, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+    }
+
+    const weeklyCtx = document.getElementById('weeklyChart');
+    if (weeklyCtx) {
+        new Chart(weeklyCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Utilization',
+                    data: [75, 80, 78, 85, 90, 95, 88],
+                    fill: false,
+                    borderColor: 'rgba(0, 255, 153, 1)',
+                    tension: 0.1
+                }]
+            }
+        });
+    }
+
+    const locationCtx = document.getElementById('locationChart');
+    if (locationCtx) {
+        new Chart(locationCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Central Mall', 'Business Hub', 'Shopping Complex'],
+                datasets: [{
+                    label: 'Bookings',
+                    data: [35, 28, 17],
+                    backgroundColor: ['rgba(0, 255, 153, 0.7)', 'rgba(0, 224, 179, 0.7)', 'rgba(44, 83, 100, 0.7)'],
+                }]
+            }
+        });
+    }
 </script>
-</body>
-</html>
+{% endblock %}

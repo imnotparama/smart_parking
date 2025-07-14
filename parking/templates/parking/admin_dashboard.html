@@ -1,0 +1,81 @@
+{% extends "parking/base.html" %}
+{% block title %}Admin Dashboard | Smart Parking Analysis{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="dashboard-header">
+        <h1 class="page-title"><i class="fa-solid fa-user-shield"></i> Admin Dashboard</h1>
+        <a href="{% url 'home' %}" class="btn btn-secondary">&larr; Back to Home</a>
+    </div>
+    
+    <!-- Stat Cards -->
+    <div class="stat-cards-grid">
+        <div class="stat-card-pro">
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-info">
+                <h4>Total Users</h4>
+                <p>{{ total_users }}</p>
+            </div>
+        </div>
+        <div class="stat-card-pro">
+            <div class="stat-icon"><i class="fa-solid fa-car"></i></div>
+            <div class="stat-info">
+                <h4>Total Slots</h4>
+                <p>{{ total_slots }}</p>
+            </div>
+        </div>
+        <div class="stat-card-pro">
+            <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
+            <div class="stat-info">
+                <h4>Total Bookings</h4>
+                <p>{{ total_bookings }}</p>
+            </div>
+        </div>
+        <div class="stat-card-pro">
+            <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div class="stat-info">
+                <h4>Total Revenue</h4>
+                <p>₹{{ total_revenue|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Tables -->
+    <div class="dashboard-tables">
+        <div class="table-container glass-card">
+            <h3>Recent Bookings</h3>
+            <table class="table">
+                <thead><tr><th>User</th><th>Slot</th><th>Booked At</th></tr></thead>
+                <tbody>
+                    {% for booking in recent_bookings %}
+                    <tr>
+                        <td>{{ booking.user.username }}</td>
+                        <td>{{ booking.slot }}</td>
+                        <td>{{ booking.booked_at|timesince }} ago</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3">No bookings yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-container glass-card">
+            <h3>Newest Users</h3>
+            <table class="table">
+                <thead><tr><th>Username</th><th>Email</th><th>Date Joined</th></tr></thead>
+                <tbody>
+                    {% for u in recent_users %}
+                    <tr>
+                        <td>{{ u.username }}</td>
+                        <td>{{ u.email }}</td>
+                        <td>{{ u.date_joined|date:"d M, Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3">No new users.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
