@@ -2,39 +2,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // === THEME TOGGLE ===
   const themeBtn = document.getElementById('themeToggle');
   const html = document.documentElement;
-  const body = document.body;
 
   function applyTheme(theme) {
     html.dataset.theme = theme;
-    body.dataset.theme = theme;
     localStorage.setItem('theme', theme);
     if (themeBtn) {
-      themeBtn.innerHTML = theme === 'dark' 
-        ? '<i class="fa-solid fa-sun"></i>' 
-        : '<i class="fa-solid fa-moon"></i>';
-      themeBtn.setAttribute('aria-label', theme === 'dark' 
-        ? 'Switch to light mode' 
-        : 'Switch to dark mode');
-    }
-    if (window.updateChartsForTheme) {
-      window.updateChartsForTheme(theme);
+      themeBtn.innerHTML = theme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
     }
   }
 
   if (themeBtn) {
     themeBtn.addEventListener('click', () => {
-      applyTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
-    });
-    themeBtn.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') themeBtn.click();
+      const newTheme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(newTheme);
     });
   }
-
   applyTheme(localStorage.getItem('theme') || 'dark');
 
   // === SIDEBAR TOGGLE ===
   const sidebarToggle = document.getElementById('sidebarToggle');
   const sidebar = document.getElementById('sidebar');
+  const body = document.body;
 
   function applySidebarState(state) {
     if (state === 'collapsed') {
@@ -52,11 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const newState = sidebar.classList.contains('collapsed') ? 'expanded' : 'collapsed';
       applySidebarState(newState);
     });
-    sidebarToggle.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') sidebarToggle.click();
-    });
-    applySidebarState(localStorage.getItem('sidebarState') || 'expanded');
   }
+  if (window.innerWidth > 900) {
+      applySidebarState(localStorage.getItem('sidebarState') || 'expanded');
+  } else {
+      applySidebarState('collapsed');
+  }
+  
 
   // === INTERACTIVE BOOKING FORM ===
   const bookingPage = document.querySelector('.booking-page-layout');
@@ -71,7 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     allSlots.forEach(slot => {
       slot.addEventListener('click', () => {
-        if (slot.classList.contains('occupied')) return;
+        if (slot.classList.contains('occupied') || slot.classList.contains('yours')) {
+            return; // Prevent selecting occupied or own slot
+        }
         allSlots.forEach(s => s.classList.remove('selected'));
         slot.classList.add('selected');
 
@@ -97,75 +89,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // === RIPPLE EFFECT ===
-  document.querySelectorAll('.touch-ripple').forEach(btn => {
-    btn.addEventListener('click', e => {
-      const ripple = document.createElement('span');
-      ripple.className = 'ripple';
-      const rect = btn.getBoundingClientRect();
-      ripple.style.left = `${e.clientX - rect.left}px`;
-      ripple.style.top = `${e.clientY - rect.top}px`;
-      btn.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
-    });
-  });
+  // ✅ NEW: Real-time slot status updater
+  const floorSelector = document.querySelector('select[name="floor"]');
+  async function updateSlotStatuses() {
+      if (!floorSelector) return;
+      const selectedFloor = floorSelector.value;
+      
+      try {
+          const response = await fetch(`/api/slots/?floor=${selectedFloor}`);
+          if (!response.ok) throw new Error('Network response was not ok.');
+          const data = await response.json();
 
-  // === MAIN CONTENT FOCUS (Accessibility) ===
-  const mainContent = document.getElementById('mainContent');
-  if (mainContent) mainContent.focus();
+          const allSlots = document.querySelectorAll('.parking-slot');
+          // Reset 'yours' class from all slots first
+          allSlots.forEach(s => s.classList.remove('yours'));
 
-  // === TOAST NOTIFICATIONS ===
-  window.showToast = function(msg, type = 'info') {
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 400);
-    }, 3000);
-  };
+          data.slots.forEach(apiSlot => {
+              const slotElement = document.querySelector(`.parking-slot[data-slot-id="${apiSlot.id}"]`);
+              if (slotElement) {
+                  const isUserBooking = apiSlot.id === data.user_booking_slot_id;
+                  
+                  // Update availability
+                  if (apiSlot.is_available && !isUserBooking) {
+                      slotElement.classList.remove('occupied');
+                      slotElement.tabIndex = 0;
+                  } else {
+                      slotElement.classList.add('occupied');
+                      slotElement.tabIndex = -1;
+                  }
 
-  // === COPY SLOT NUMBER TO CLIPBOARD ===
-  document.querySelectorAll('.slot-label').forEach(label => {
-    label.addEventListener('dblclick', () => {
-      navigator.clipboard.writeText(label.textContent.trim());
-      window.showToast('Slot copied!', 'success');
-    });
-  });
+                  // Mark user's own booking
+                  if (isUserBooking) {
+                      slotElement.classList.add('yours');
+                      slotElement.classList.remove('occupied'); // 'yours' takes precedence
+                  }
+              }
+          });
 
-  // === SMOOTH SCROLL ON NAVIGATION ===
-  document.querySelectorAll('a, button[type="submit"]').forEach(el => {
-    el.addEventListener('click', () => {
-      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
-    });
-  });
-
-  // === CHART.JS THEME SYNC ===
-  window.updateChartsForTheme = function(theme) {
-    if (window.Chart && Chart.instances) {
-      Object.values(Chart.instances).forEach(chart => {
-        chart.options.plugins.legend.labels.color = theme === 'dark' ? '#fff' : '#2c3e50';
-        chart.options.scales.x.ticks.color = theme === 'dark' ? '#fff' : '#2c3e50';
-        chart.options.scales.y.ticks.color = theme === 'dark' ? '#fff' : '#2c3e50';
-        chart.update();
-      });
-    }
-  };
-
-  if (window.updateChartsForTheme) {
-    window.updateChartsForTheme(body.dataset.theme);
+      } catch (error) {
+          console.error("Failed to fetch slot statuses:", error);
+      }
   }
 
-  // === ENTER KEY SUBMIT ===
-  document.querySelectorAll('form').forEach(form => {
-    form.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-        const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
-        if (submitBtn) submitBtn.click();
-        e.preventDefault();
-      }
-    });
-  });
+  // ✅ NEW: Poll for updates only on the home page
+  if (bookingPage) {
+      // Update immediately on floor change
+      floorSelector.addEventListener('change', function() {
+          this.form.submit(); // Submit to reload page for the new floor
+      });
+      // Poll every 15 seconds for real-time updates
+      setInterval(updateSlotStatuses, 15000);
+      // Run once on page load as well
+      updateSlotStatuses();
+  }
 });

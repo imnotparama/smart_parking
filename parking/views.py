@@ -9,6 +9,9 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from collections import defaultdict
+from datetime import timedelta
+from django.db.models.functions import TruncDay
+
 
 from .models import ParkingSlot, Booking, User
 from .forms import BookingForm, CustomLoginForm, CustomSignupForm
@@ -27,6 +30,11 @@ def home(request):
     sections = defaultdict(list)
     for slot in slots:
         sections[slot.section].append(slot)
+        
+    # ✅ MODIFIED: Get the active booking for the current user to highlight their slot
+    user_active_booking = None
+    if request.user.is_authenticated:
+        user_active_booking = Booking.objects.filter(user=request.user, status='ACTIVE').first()
 
     form = BookingForm()
     context = {
@@ -34,6 +42,7 @@ def home(request):
         'all_floors': all_floors,
         'selected_floor': selected_floor,
         'form': form,
+        'user_active_booking': user_active_booking,
     }
     return render(request, 'parking/home.html', context)
 
@@ -53,12 +62,12 @@ def book_slot(request):
             except ParkingSlot.DoesNotExist:
                 messages.error(request, "This slot is no longer available or has already been booked.")
                 return redirect('home')
-
-            if Booking.objects.filter(user=request.user).exists():
+            
+            # ✅ MODIFIED: Check for 'ACTIVE' bookings specifically
+            if Booking.objects.filter(user=request.user, status='ACTIVE').exists():
                 messages.error(request, "You already have an active booking. Please cancel it before making a new one.")
                 return redirect('my_bookings')
 
-            # Ensure all required fields are passed
             booking = Booking.objects.create(
                 user=request.user,
                 slot=slot,
@@ -75,14 +84,12 @@ def book_slot(request):
             html_message = render_to_string('parking/emails/booking_confirmation.html', context)
             plain_message = f"Hi {request.user.username},\n\nYour booking for Slot {slot} is confirmed. Thank you!"
 
-            send_mail(
-                subject,
-                plain_message,
-                settings.DEFAULT_FROM_EMAIL,
-                [request.user.email],
-                html_message=html_message,
-                fail_silently=False
-            )
+            try:
+                send_mail(subject, plain_message, settings.DEFAULT_FROM_EMAIL, [request.user.email], html_message=html_message, fail_silently=False)
+            except Exception as e:
+                # Log the error, but don't prevent the user from seeing the success message
+                print(f"Email sending failed: {e}")
+                messages.warning(request, "Booking successful, but confirmation email could not be sent.")
 
             messages.success(request, f"Slot {slot} booked successfully! A confirmation email has been sent.")
             return redirect('my_bookings')
@@ -93,53 +100,35 @@ def book_slot(request):
 
 @login_required
 def my_bookings(request):
-    user_bookings = Booking.objects.filter(user=request.user).order_by('-parking_date', '-start_time')
-    return render(request, 'parking/my_bookings.html', {'bookings': user_bookings})
+    # ✅ MODIFIED: Fetch active bookings first, then past bookings
+    active_bookings = Booking.objects.filter(user=request.user, status='ACTIVE').order_by('-booked_at')
+    past_bookings = Booking.objects.filter(user=request.user).exclude(status='ACTIVE').order_by('-end_time')
+    return render(request, 'parking/my_bookings.html', {'active_bookings': active_bookings, 'past_bookings': past_bookings})
 
 
 @login_required
 def cancel_booking(request, booking_id):
-    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    # ✅ MODIFIED: Now sets status to CANCELLED instead of deleting the object
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user, status='ACTIVE')
     if request.method == 'POST':
         slot = booking.slot
         slot.is_available = True
         slot.save()
-        booking.delete()
+        
+        booking.status = Booking.BookingStatus.CANCELLED
+        booking.save()
+        
         messages.success(request, f"Booking for {slot} has been successfully cancelled.")
         return redirect('my_bookings')
     return redirect('my_bookings')
 
 
 @login_required
-def analytics(request):
-    total_slots = ParkingSlot.objects.count()
-    available_slots = ParkingSlot.objects.filter(is_available=True).count()
-    occupied_slots = total_slots - available_slots
-    total_bookings = Booking.objects.count()
-    bookings_today = Booking.objects.filter(booked_at__date=timezone.now().date()).count()
-    total_revenue = Booking.objects.aggregate(
-        total=Sum(F('slot__price') * F('duration_hours'))
-    )['total'] or 0
-    slot_stats = Booking.objects.values('slot__number').annotate(count=Count('id')).order_by('slot__number')
-
-    context = {
-        'total_slots': total_slots,
-        'available_slots': available_slots,
-        'occupied_slots': occupied_slots,
-        'total_bookings': total_bookings,
-        'bookings_today': bookings_today,
-        'total_revenue': total_revenue,
-        'slot_stats': slot_stats,
-        'page_title': 'Analytics Dashboard'
-    }
-    return render(request, 'parking/analytics.html', context)
-
-
-@login_required
 def user_analytics_view(request):
     user_bookings = Booking.objects.filter(user=request.user)
     total_bookings = user_bookings.count()
-    total_spent = user_bookings.aggregate(
+    # ✅ MODIFIED: Calculates cost only from non-cancelled bookings
+    total_spent = user_bookings.exclude(status='CANCELLED').aggregate(
         total=Sum(F('slot__price') * F('duration_hours'))
     )['total'] or 0
 
@@ -153,37 +142,90 @@ def user_analytics_view(request):
 @login_required
 @user_passes_test(lambda u: u.is_staff, login_url='home')
 def admin_dashboard_view(request):
+    # This view can be merged with admin_analytics_view, but keeping it separate for clarity
+    # If you have a separate template for it. The logic is duplicated in admin_analytics_view.
     total_users = User.objects.count()
     total_slots = ParkingSlot.objects.count()
     total_bookings = Booking.objects.count()
-    total_revenue = Booking.objects.aggregate(
+    total_revenue = Booking.objects.exclude(status='CANCELLED').aggregate(
         total=Sum(F('slot__price') * F('duration_hours'))
     )['total'] or 0
     recent_bookings = Booking.objects.select_related('user', 'slot').order_by('-booked_at')[:5]
     recent_users = User.objects.filter(is_staff=False, is_superuser=False).order_by('-date_joined')[:5]
     top_booking_users = User.objects.annotate(
-        booking_count=Count('booking')
+        booking_count=Count('bookings')
     ).filter(booking_count__gt=0).order_by('-booking_count')[:5]
 
     context = {
-        'total_users': total_users,
-        'total_slots': total_slots,
-        'total_bookings': total_bookings,
-        'total_revenue': total_revenue,
-        'recent_bookings': recent_bookings,
-        'recent_users': recent_users,
-        'top_booking_users': top_booking_users,
-        'page_title': 'Admin Dashboard'
+        'total_users': total_users, 'total_slots': total_slots,
+        'total_bookings': total_bookings, 'total_revenue': total_revenue,
+        'recent_bookings': recent_bookings, 'recent_users': recent_users,
+        'top_booking_users': top_booking_users, 'page_title': 'Admin Dashboard'
     }
     return render(request, 'parking/admin_dashboard.html', context)
+    
+
+@login_required
+@user_passes_test(lambda u: u.is_staff, login_url='home')
+def admin_analytics_view(request):
+    total_users = User.objects.count()
+    total_slots = ParkingSlot.objects.count()
+    total_bookings = Booking.objects.filter(status__in=['ACTIVE', 'COMPLETED']).count()
+    total_revenue = Booking.objects.filter(status__in=['ACTIVE', 'COMPLETED']).aggregate(
+        total=Sum(F('slot__price') * F('duration_hours'))
+    )['total'] or 0
+    recent_bookings = Booking.objects.select_related('user', 'slot').order_by('-booked_at')[:5]
+    recent_users = User.objects.filter(is_staff=False, is_superuser=False).order_by('-date_joined')[:5]
+    top_booking_users = User.objects.annotate(
+        booking_count=Count('bookings')
+    ).filter(booking_count__gt=0).order_by('-booking_count')[:5]
+
+    # ✅ NEW: Data for the 7-day revenue chart
+    today = timezone.now().date()
+    week_start = today - timedelta(days=6)
+    revenue_by_day = Booking.objects.filter(
+        status__in=['ACTIVE', 'COMPLETED'], parking_date__range=[week_start, today]
+    ).annotate(day=TruncDay('parking_date')) \
+     .values('day') \
+     .annotate(daily_revenue=Sum(F('slot__price') * F('duration_hours'))) \
+     .order_by('day')
+
+    date_range = [week_start + timedelta(days=i) for i in range(7)]
+    revenue_data = {d.strftime('%a'): 0 for d in date_range}
+    for item in revenue_by_day:
+        revenue_data[item['day'].strftime('%a')] = float(item['daily_revenue'])
+
+    context = {
+        'total_users': total_users, 'total_slots': total_slots,
+        'total_bookings': total_bookings, 'total_revenue': total_revenue,
+        'recent_bookings': recent_bookings, 'recent_users': recent_users,
+        'top_booking_users': top_booking_users, 'page_title': 'Admin Analytics',
+        'revenue_labels': list(revenue_data.keys()),
+        'revenue_values': list(revenue_data.values()),
+    }
+    return render(request, 'parking/admin_analytics.html', context)
+
+
+# ✅ NEW: Real-time API for slot status
+def api_slots(request):
+    floor = request.GET.get('floor', '1')
+    slots = ParkingSlot.objects.filter(floor=floor).values('id', 'is_available')
+    
+    # Also check if the current user has an active booking on this floor
+    user_booking_slot_id = None
+    if request.user.is_authenticated:
+        booking = Booking.objects.filter(user=request.user, status='ACTIVE', slot__floor=floor).first()
+        if booking:
+            user_booking_slot_id = booking.slot.id
+            
+    return JsonResponse({
+        'slots': list(slots),
+        'user_booking_slot_id': user_booking_slot_id
+    })
 
 
 def help_page(request):
     return render(request, 'parking/help.html')
-
-
-def api_slots(request):
-    return JsonResponse({"status": "ok"})
 
 
 def login_view(request):
@@ -192,11 +234,7 @@ def login_view(request):
     if request.method == 'POST':
         form = CustomLoginForm(request.POST)
         if form.is_valid():
-            user = authenticate(
-                request,
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password']
-            )
+            user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             if user:
                 auth_login(request, user)
                 return redirect('home')
@@ -226,33 +264,3 @@ def signup_view(request):
     else:
         form = CustomSignupForm()
     return render(request, 'parking/signup.html', {'form': form})
-
-
-# Separate admin view for standalone admin analytics template (optional use)
-from django.contrib.admin.views.decorators import staff_member_required
-
-@staff_member_required
-def admin_analytics_view(request):
-    total_users = User.objects.count()
-    total_slots = ParkingSlot.objects.count()
-    total_bookings = Booking.objects.count()
-    total_revenue = Booking.objects.aggregate(
-        total=Sum(F('slot__price') * F('duration_hours'))
-    )['total'] or 0
-    recent_bookings = Booking.objects.select_related('user', 'slot').order_by('-booked_at')[:5]
-    recent_users = User.objects.filter(is_staff=False, is_superuser=False).order_by('-date_joined')[:5]
-    top_booking_users = User.objects.annotate(
-        booking_count=Count('booking')
-    ).filter(booking_count__gt=0).order_by('-booking_count')[:5]
-
-    context = {
-        'total_users': total_users,
-        'total_slots': total_slots,
-        'total_bookings': total_bookings,
-        'total_revenue': total_revenue,
-        'recent_bookings': recent_bookings,
-        'recent_users': recent_users,
-        'top_booking_users': top_booking_users,
-        'page_title': 'Admin Dashboard'
-    }
-    return render(request, 'admin/analytics.html', context)

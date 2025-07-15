@@ -5,31 +5,29 @@
 <div class="page-container">
   <h2 class="page-title"><i class="fa-solid fa-clipboard-list"></i> My Bookings</h2>
 
-  {% if bookings %}
+  <!-- Active Bookings -->
+  <h3 class="table-title">Active Booking</h3>
+  {% if active_bookings %}
     <div class="table-container glass-card">
       <table class="table">
         <thead>
           <tr>
             <th>Slot</th>
-            <th>Floor</th>
             <th>Vehicle Number</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Duration</th>
+            <th>Date & Time</th>
+            <th>Ends In</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {% for b in bookings %}
+          {% for b in active_bookings %}
             <tr>
-              <td>{{ b.slot.section }}{{ b.slot.number }}</td>
-              <td>{{ b.slot.floor }}</td>
+              <td>{{ b.slot.section }}{{ b.slot.number }} (Floor {{ b.slot.floor }})</td>
               <td>{{ b.vehicle_number }}</td>
-              <td>{{ b.parking_date|date:"d M, Y" }}</td>
-              <td>{{ b.start_time|time:"H:i" }}</td>
-              <td>{{ b.duration_hours }} Hours</td>
+              <td>{{ b.parking_date|date:"d M, Y" }} at {{ b.start_time|time:"H:i" }}</td>
+              <td>{{ b.end_time|timeuntil }}</td>
               <td>
-                <form method="post" action="{% url 'cancel_booking' b.id %}" style="margin:0;">
+                <form method="post" action="{% url 'cancel_booking' b.id %}" onsubmit="return confirm('Are you sure you want to cancel this booking?');" style="margin:0;">
                   {% csrf_token %}
                   <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
                 </form>
@@ -42,12 +40,41 @@
   {% else %}
     <div class="no-data glass-card">
       <p>You have no active bookings.</p>
-      <p>Go ahead and book your first slot!</p>
+      <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top:16px;">Book a Slot</a>
     </div>
   {% endif %}
 
-  <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top:24px; font-weight:bold;">
-    <i class="fa-solid fa-arrow-left"></i> Back to Home
-  </a>
+  <!-- Past Bookings -->
+  <h3 class="table-title" style="margin-top: 40px;">Booking History</h3>
+  {% if past_bookings %}
+    <div class="table-container glass-card">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Slot</th>
+            <th>Vehicle Number</th>
+            <th>Date</th>
+            <th>Duration</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in past_bookings %}
+            <tr>
+              <td>{{ b.slot.section }}{{ b.slot.number }}</td>
+              <td>{{ b.vehicle_number }}</td>
+              <td>{{ b.parking_date|date:"d M, Y" }}</td>
+              <td>{{ b.duration_hours }} Hours</td>
+              <td><span class="status-badge status-{{ b.status|lower }}">{{ b.get_status_display }}</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="no-data glass-card">
+      <p>You have no past bookings yet.</p>
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

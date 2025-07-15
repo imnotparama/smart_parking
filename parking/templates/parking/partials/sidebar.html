@@ -1,50 +1,55 @@
+<!-- In templates/parking/partials/sidebar.html -->
+
 <nav id="sidebar" class="sidebar" aria-label="Primary Navigation">
   <div class="sidebar-title">
     <a href="{% url 'home' %}" class="logo-link">
       <i class="fa-solid fa-car-on"></i>
+      <!-- ✅ MODIFIED: Text is now in a span for easier CSS targeting -->
       <span class="app-name">Smart Parking</span>
     </a>
   </div>
 
   <ul>
     <li class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
-      <a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> Home</a>
+      <a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> <span class="nav-text">Home</span></a>
     </li>
 
     {% if user.is_authenticated %}
       <li class="{% if request.resolver_match.url_name == 'my_bookings' %}active{% endif %}">
-        <a href="{% url 'my_bookings' %}"><i class="fa-solid fa-clipboard-list"></i> My Bookings</a>
+        <a href="{% url 'my_bookings' %}"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">My Bookings</span></a>
       </li>
       <li class="{% if request.resolver_match.url_name == 'user_analytics' %}active{% endif %}">
-        <a href="{% url 'user_analytics' %}"><i class="fa-solid fa-chart-pie"></i> My Analytics</a>
+        <a href="{% url 'user_analytics' %}"><i class="fa-solid fa-chart-pie"></i> <span class="nav-text">My Analytics</span></a>
       </li>
 
       {% if user.is_staff %}
-        <li class="{% if request.resolver_match.url_name == 'admin_analytics' %}active{% endif %}">
-          <a href="{% url 'admin_analytics' %}"><i class="fa-solid fa-user-shield"></i> Admin Dashboard</a>
+        <li class="{% if request.resolver_match.url_name == 'admin_analytics' or request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+          <a href="{% url 'admin_analytics' %}"><i class="fa-solid fa-user-shield"></i> <span class="nav-text">Admin Dashboard</span></a>
         </li>
       {% endif %}
 
       <li>
-        <a href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        <a href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> <span class="nav-text">Logout</span></a>
       </li>
     {% else %}
-      <li>
-        <a href="{% url 'login' %}"><i class="fa-solid fa-key"></i> Login</a>
+      <li class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}">
+        <a href="{% url 'login' %}"><i class="fa-solid fa-key"></i> <span class="nav-text">Login</span></a>
       </li>
-      <li>
-        <a href="{% url 'signup' %}"><i class="fa-solid fa-pen"></i> Sign Up</a>
+      <li class="{% if request.resolver_match.url_name == 'signup' %}active{% endif %}">
+        <a href="{% url 'signup' %}"><i class="fa-solid fa-pen"></i> <span class="nav-text">Sign Up</span></a>
       </li>
     {% endif %}
 
-    <li>
-      <a href="{% url 'help' %}"><i class="fa-solid fa-circle-question"></i> Help</a>
+    <li class="{% if request.resolver_match.url_name == 'help' %}active{% endif %}">
+      <a href="{% url 'help' %}"><i class="fa-solid fa-circle-question"></i> <span class="nav-text">Help</span></a>
     </li>
   </ul>
 
   {% if user.is_authenticated %}
     <div class="sidebar-user">
-      <i class="fa-solid fa-user"></i> {{ user.username }}
+      <i class="fa-solid fa-user"></i> 
+      <!-- ✅ MODIFIED: Text is now in a span for easier CSS targeting -->
+      <span class="nav-text">{{ user.username }}</span>
     </div>
   {% endif %}
 </nav>

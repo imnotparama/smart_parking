@@ -1,24 +1,13 @@
 /*
 ================================================================================
-|   Smart Parking Analysis - Final Professional Stylesheet                     |
+|   Smart Parking Analysis - Final Professional Stylesheet (Upgraded & Fixed)  |
 |   Features: Light/Dark Mode, Collapsible Sidebar, Animations, Garage Layout  |
 ================================================================================
 */
+
 /* --- Root Palette & Dark-Mode Swap --- */
+/* This is the primary (dark mode) theme */
 :root {
-  --primary: #6a11cb;
-  --primary-gradient: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-  --danger: #e74c3c;
-  --bg: #f8f9fa;
-  --card-bg: #ffffff;
-  --text: #212529;
-  --text-light: #6c757d;
-  --border: #dee2e6;
-  --radius: 12px;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  --transition: 0.3s ease;
-}
-[data-theme="dark"] {
   --primary: #00ff99;
   --primary-gradient: linear-gradient(90deg, #00ff99 0%, #00e0b3 100%);
   --danger: #ff5252;
@@ -27,48 +16,39 @@
   --text: #eaf6fb;
   --text-light: #8a9aab;
   --border: #2a3a4a;
-  --shadow: 0 8px 24px rgba(0, 255, 153, 0.1);
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --transition: 0.3s ease;
 }
+
+/* This is the light mode theme */
+[data-theme="light"] {
+  --primary: #6a11cb;
+  --primary-gradient: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+  --danger: #e74c3c;
+  --bg: #f8f9fa;
+  --card-bg: #ffffff;
+  --text: #212529;
+  --text-light: #6c757d;
+  --border: #dee2e6;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
 
 /* --- Global & Layout --- */
-
-:root {
-  --primary: #00ffb3;
-  --primary-dark: #009966;
-  --danger: #ff3c3c;
-  --bg: #101c24;
-  --bg-light: #fff;
-  --text: #eaf6fb;
-  --text-light: #7b8ca6;
-  --accent: #ff0055;
-  --radius: 18px;
-  --shadow: 0 4px 24px #00ffb355;
-  --neon: 0 0 8px #00ffb3, 0 0 16px #00ffb3;
-  --neon-red: 0 0 8px #ff3c3c, 0 0 16px #ff3c3c;
-  --transition: 0.3s cubic-bezier(.4,2,.6,1);
-}
-[data-theme="light"] {
-  --bg: #fff;
-  --text: #2c3e50;
-  --primary: #ff3c3c;
-  --primary-dark: #b30000;
-  --accent: #b30000;
-  --shadow: 0 4px 24px #ff3c3c33;
-  --neon: 0 0 8px #ff3c3c, 0 0 16px #ff3c3c;
-}
-
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Poppins', sans-serif;
-
   transition: background 0.3s, color 0.3s, padding-left 0.3s ease-in-out;
   padding-left: 250px; /* Start with space for the sidebar */
   overflow-x: hidden;
 }
+
 body.sidebar-collapsed {
   padding-left: 80px; /* Adjust for collapsed sidebar */
 }
+
 .main-content {
   padding: 40px;
   width: 100%;
@@ -80,263 +60,389 @@ body.sidebar-collapsed {
 }
 
 /* --- Toggles & Sidebar --- */
-.theme-toggle, .sidebar-toggle { position: fixed; top: 24px; z-index: 1001; width: 48px; height: 48px; border-radius: 50%; background: var(--card-bg); color: var(--primary); border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; transition: all 0.2s; }
+.theme-toggle, .sidebar-toggle {
+  position: fixed;
+  top: 24px;
+  z-index: 1001;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
 .theme-toggle { right: 24px; }
 .sidebar-toggle { left: 24px; }
+.theme-toggle:hover, .sidebar-toggle:hover {
+  background: var(--primary);
+  color: var(--card-bg);
+}
+
 .sidebar {
   width: 250px;
-  background: #121212;
+  background: #121212; /* A consistent dark bg for sidebar in both themes */
   color: #fff;
   position: fixed;
-  top: 0; left: 0; height: 100%;
+  top: 0;
+  left: 0;
+  height: 100%;
   z-index: 1000;
-  display: flex; flex-direction: column;
+  display: flex;
+  flex-direction: column;
   box-shadow: 4px 0 24px rgba(0,0,0,0.2), 0 0 20px var(--primary) inset;
   border-right: 2px solid var(--primary);
   transition: width 0.3s ease-in-out;
   overflow-x: hidden;
 }
+
+.sidebar-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  padding: 36px 12px 28px;
+  text-align: center;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--primary);
+  text-decoration: none;
+}
+.logo-link i { font-size: 1.8rem; }
+.sidebar ul { list-style: none; padding: 0; margin: 0; flex: 1; }
+.sidebar ul li a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  color: #aab8c2;
+  text-decoration: none;
+  font-size: 1rem;
+  border-left: 4px solid transparent;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.sidebar ul li.active a, .sidebar ul li a:hover {
+  background: var(--primary);
+  color: #000; /* Text on active link should be dark for contrast */
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  font-size: 1rem;
+  color: #aab8c2;
+  margin-top: auto;
+  border-top: 1px solid #2a3a4a;
+}
+
+/* ✅ FIXED: Correctly handle sidebar collapse */
 .sidebar.collapsed { width: 80px; }
+
 .sidebar.collapsed .app-name,
 .sidebar.collapsed .nav-text {
   opacity: 0;
   width: 0;
   visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s, width 0.2s;
+  white-space: nowrap;
 }
-.sidebar .nav-text { transition: opacity 0.2s; }
-.sidebar.collapsed .logo-link, .sidebar.collapsed ul li a, .sidebar.collapsed .sidebar-user {
+
+.sidebar.collapsed .logo-link,
+.sidebar.collapsed ul li a,
+.sidebar.collapsed .sidebar-user {
   justify-content: center;
   padding-left: 0;
   padding-right: 0;
 }
-.sidebar-title { font-size: 1.2rem; font-weight: 900; padding: 36px 12px 28px; text-align: center; }
-.logo-link { display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--primary); text-decoration: none; }
-.logo-link i { font-size: 1.8rem; }
-.sidebar ul { list-style: none; padding: 0; margin: 0; flex: 1; }
-.sidebar ul li a { display: flex; align-items: center; gap: 14px; padding: 18px 24px; color: #aab8c2; text-decoration: none; font-size: 1rem; border-left: 4px solid transparent; font-weight: 600; white-space: nowrap; transition: all 0.2s; }
-.sidebar ul li.active a, .sidebar ul li a:hover { background: var(--primary); color: #fff; }
-.sidebar-user { display: flex; align-items: center; gap: 14px; padding: 20px 24px; font-size: 1rem; color: #aab8c2; margin-top: auto; border-top: 1px solid #2a3a4a; }
 
-/* ... All your other styles for buttons, cards, booking page, admin dashboard, etc. go here ... */
-/* --- Root Palette & Dark-Mode Swap --- */
+.sidebar.collapsed .sidebar-user > i {
+  margin: 0;
+}
+
+
 /* --- All Other Pages Layout & Cards --- */
 .page-container { padding: 40px; }
 .page-title { font-size: 2.2rem; font-weight: 700; color: var(--text); margin-bottom: 32px; }
-.glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
-.btn-primary { background: var(--primary-gradient); color: #fff; }
+.glass-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.5s ease-out;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-primary { background: var(--primary-gradient); color: #000; }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-secondary {
+    background: var(--card-bg);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+}
 .btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: var(--shadow); }
 
 /* --- Booking Page --- */
-/* --- Booking Page Layout --- */
 .booking-page-layout {
   display: grid;
-  grid-template-columns: 3fr 1fr; /* 3 parts for layout, 1 for form */
+  grid-template-columns: 3fr 1fr;
   gap: 40px;
   width: 100%;
   max-width: 1600px;
+  margin: 0 auto;
 }
 .parking-layout-container {
   padding: 32px;
-  border-radius: var(--radius);
-  background: var(--card-bg);
-  border: 1px solid var(--border);
 }
-.layout-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
-.legend-box { display: inline-block; width: 16px; height: 16px; border-radius: 4px; margin-right: 6px; vertical-align: middle; }
+.layout-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.legend { display: flex; gap: 16px; flex-wrap: wrap;}
+.legend span { display: flex; align-items: center; gap: 8px; }
+.legend-box { display: inline-block; width: 16px; height: 16px; border-radius: 4px; }
 .legend-box.available { background: var(--card-bg); border: 1px solid var(--border); }
 .legend-box.occupied { background: #dc3545; }
 .legend-box.handicap { background: #007bff; }
 .legend-box.ev { background: #ffc107; }
+
 .parking-section { margin-bottom: 24px; }
-.parking-section h3 { background: var(--bg); color: var(--text); padding: 8px 16px; border-radius: 8px; display: inline-block; margin-bottom: 16px; border: 1px solid var(--border); }
-.slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 16px; }
-.parking-slot { border: 2px solid var(--border); padding: 8px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; }
-.parking-slot:hover:not(.occupied) { transform: translateY(-4px) scale(1.05); box-shadow: var(--shadow); }
-.parking-slot.occupied { background: #e9ecef; color: #adb5bd; cursor: not-allowed; }
-[data-theme="dark"] .parking-slot.occupied { background: #212529; }
+.parking-section h3 {
+  background: var(--bg);
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+}
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 16px;
+}
+.parking-slot {
+  border: 2px solid var(--border);
+  padding: 8px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.parking-slot:hover:not(.occupied):not(.yours) {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: var(--shadow);
+  border-color: var(--primary);
+}
+.parking-slot.occupied {
+  background: #343a40;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+[data-theme="light"] .parking-slot.occupied { background: #e9ecef; color: #adb5bd; }
 .parking-slot.handicap { border-left: 4px solid #007bff; }
 .parking-slot.ev { border-left: 4px solid #ffc107; }
-.parking-slot.selected { border-color: var(--primary); transform: scale(1.08); box-shadow: var(--shadow); z-index: 10; }
+.parking-slot.selected {
+  border-color: var(--primary);
+  transform: scale(1.08);
+  box-shadow: 0 0 24px var(--primary);
+  z-index: 10;
+}
 .slot-name { font-weight: 700; font-size: 1.1rem; }
 .slot-price { font-size: 0.8rem; color: var(--text-light); }
 .slot-icons { margin-top: 4px; display: flex; justify-content: center; gap: 4px; color: var(--text-light); }
 
-.booking-form-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 400px;
-}
-.booking-summary, .booking-details-form {
-  padding: 24px;
-  border-radius: var(--radius);
-  border: 1px solid var(--primary);
-  box-shadow: 0 0 16px var(--primary);
-  transition: all 0.3s;
-}
-.booking-summary:hover, .booking-details-form:hover {
-  box-shadow: 0 0 24px var(--primary);
-}
+.booking-form-container { display: flex; flex-direction: column; gap: 24px; }
+.booking-summary, .booking-details-form { padding: 24px; border: 1px solid var(--border); }
 .summary-item { display: flex; justify-content: space-between; margin-bottom: 12px; }
-.summary-item.total { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
-.form-group { flex: 1; margin-bottom: 16px; }
+.summary-item.total { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
+.form-group { margin-bottom: 16px; }
 .form-group label { display: block; font-weight: 600; margin-bottom: 6px; }
-.form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; background: var(--bg); color: var(--text); }
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: var(--bg);
+  color: var(--text);
+  box-sizing: border-box;
+}
 #book-now-btn { width: 100%; padding: 14px; font-size: 1.1rem; }
 
 /* --- Admin & Analytics --- */
 .admin-dashboard, .analytics-dashboard { padding: 40px; }
 .stat-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
-.stat-card-pro { background: var(--card-bg); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; align-items: center; gap: 20px; border-left: 5px solid var(--primary); }
+.stat-card-pro {
+  background: var(--card-bg);
+  padding: 24px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-left: 5px solid var(--primary);
+}
 .stat-card-pro .stat-icon { font-size: 2.5rem; color: var(--primary); }
-.stat-card-pro h4 { font-size: 1rem; color: var(--text-light); margin-bottom: 4px; font-weight: 600; }
-.stat-card-pro p { font-size: 1.8rem; font-weight: 700; color: var(--text); line-height: 1; }
+.stat-card-pro h4 { font-size: 1rem; color: var(--text-light); margin: 0 0 4px 0; font-weight: 600; }
+.stat-card-pro p { font-size: 1.8rem; font-weight: 700; color: var(--text); line-height: 1; margin: 0;}
 .dashboard-tables { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.table-container { padding: 24px; }
+.table-container { padding: 24px; background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); }
 .table-container h3 { font-size: 1.5rem; margin-bottom: 16px; }
 .table { width: 100%; border-collapse: collapse; }
-.table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+.table th, .table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
 .table thead { background: var(--bg); }
 .no-data-cell { text-align: center; padding: 20px; color: var(--text-light); }
+
 /* --- Guest Call to Action Card --- */
-.guest-cta-card {
-    padding: 40px;
-    text-align: center;
-}
+.guest-cta-card { padding: 40px; text-align: center; }
+.guest-cta-card h3 { font-size: 1.5rem; color: var(--primary); margin-bottom: 16px; }
+.guest-cta-card p { color: var(--text-light); margin-bottom: 24px; }
+.cta-buttons { display: flex; gap: 16px; justify-content: center; }
 
-.guest-cta-card h3 {
-    font-size: 1.5rem;
-    color: var(--primary);
-    margin-bottom: 16px;
-}
-
-.guest-cta-card p {
-    color: var(--text-light);
-    margin-bottom: 24px;
-}
-
-.cta-buttons {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-}
-
+/* ✅ FIXED: Removed 'flex: 1' to fix tall buttons */
 .cta-buttons .btn {
-    flex: 1;
+    /* No 'flex: 1' here */
 }
 
-.btn-secondary {
-    background: var(--bg);
+/* Django Messages */
+.django-messages {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.message {
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 8px;
+  animation: slideIn 0.3s ease-in-out;
+  box-shadow: var(--shadow);
+  color: #fff;
+}
+.message.success { background: #28a745; }
+.message.error { background: #dc3545; }
+.message.warning { background: #ffc107; color: #212529; }
+.message.info { background: #17a2b8; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px);} to { opacity: 1; transform: translateX(0);} }
+
+/* =================================== */
+/* === STYLES FOR UPGRADED FEATURES === */
+/* =================================== */
+
+/* Style for the user's own booked slot */
+.legend-box.yours {
+  background: #00bfff; /* Deep Sky Blue */
+  border-color: #00bfff;
+}
+
+.parking-slot.yours {
+  background: rgba(0, 191, 255, 0.15);
+  border: 2px solid #00bfff;
+  box-shadow: 0 0 16px rgba(0, 191, 255, 0.7);
+  cursor: not-allowed;
+}
+
+/* Style for status badges on My Bookings page */
+.table-title {
+    font-size: 1.5rem;
     color: var(--text);
-    border: 2px solid var(--primary);
-  min-height: 100vh;
-  transition: background var(--transition), color var(--transition);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
 }
-.theme-toggle, .sidebar-toggle {
-  position: fixed; top: 24px; z-index: 1001;
-  width: 48px; height: 48px; border-radius: 50%;
-  background: var(--bg); color: var(--primary);
-  border: 2px solid var(--primary); box-shadow: var(--shadow);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.7rem; cursor: pointer; transition: all var(--transition);
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    display: inline-block;
 }
-.theme-toggle { right: 36px; }
-.sidebar-toggle { left: 36px; }
-.theme-toggle:hover, .sidebar-toggle:hover { background: var(--primary); color: var(--bg); }
-.container { display: flex; min-height: 100vh; }
-.sidebar {
-  width: 250px; background: #181f25; color: #00ffb3;
-  display: flex; flex-direction: column; align-items: stretch;
-  box-shadow: 6px 0 32px 0 #00ffb3a0; border-top-right-radius: 32px; border-bottom-right-radius: 32px;
-  z-index: 10; border-right: 2px solid var(--primary); transition: width var(--transition);
+
+.status-badge.status-completed {
+    background-color: #34495e;
+    color: #bdc3c7;
 }
-.sidebar.collapsed { width: 70px; min-width: 70px; }
-.sidebar-title { font-size: 1.5rem; font-weight: 900; padding: 36px 0 28px 0; text-align: center; letter-spacing: 2.5px; text-shadow: var(--neon); }
-.app-name { color: var(--primary); text-shadow: var(--neon); }
-.sidebar ul { list-style: none; padding: 0; margin: 0; flex: 1; }
-.sidebar ul li { margin: 0; }
-.sidebar ul li a {
-  display: flex; align-items: center; gap: 14px; padding: 18px 36px;
-  color: #fff; text-decoration: none; font-size: 18px; border-left: 4px solid transparent;
-  border-radius: 16px 0 0 16px; margin: 6px 0; font-weight: 700; letter-spacing: 1.2px;
-  box-shadow: 0 0 0 transparent; transition: all var(--transition);
+
+.status-badge.status-cancelled {
+    background-color: #7f231c;
+    color: #f2a099;
 }
-.sidebar ul li.active a, .sidebar ul li a:hover, .sidebar ul li a:focus {
-  background: linear-gradient(90deg, var(--primary) 60%, var(--primary-dark) 100%);
-  border-left: 4px solid var(--primary); color: #222c36; transform: translateX(6px) scale(1.06);
-  box-shadow: var(--neon);
+
+.status-badge.status-active {
+    background-color: #16652a;
+    color: #a3f7b9;
 }
-.sidebar-user { padding: 20px 36px; background: #181f25; font-size: 16px; border-top: 1.5px solid var(--primary); color: #00ffb3; margin-top: auto; border-bottom-right-radius: 32px; }
-.main-content { flex: 1; padding: 48px 36px 36px 36px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
-.hero-car-icon { font-size: 5rem; color: var(--primary); margin: 38px auto 18px auto; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 24px var(--primary)); animation: car-entrance 1.2s cubic-bezier(.4,2,.6,1); border-radius: 50%; background: rgba(0,255,247,0.08); box-shadow: 0 0 32px var(--primary), 0 0 0 4px var(--primary-dark); border: 2px solid var(--primary); }
-@keyframes car-entrance { 0% { transform: translateY(-80px) scale(0.7); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-.badges { display: flex; gap: 16px; justify-content: center; margin-bottom: 22px; }
-.badge { display: inline-flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 800; padding: 8px 18px; border-radius: 18px; background: var(--primary); color: #fff; box-shadow: var(--neon); letter-spacing: 1.2px; user-select: none; border: 2px solid #fff; text-shadow: var(--neon); }
-.badge.new { background: #ff00cc; border-color: #ff00cc; }
-.badge.secure { background: var(--primary); border-color: var(--primary); }
-.badge.fast { background: #f7971e; border-color: #ffd200; }
-h1, .hero-title { font-size: 2.2rem; font-weight: 900; margin-bottom: 36px; text-align: center; color: var(--primary); letter-spacing: 2.5px; text-shadow: var(--neon); background: linear-gradient(90deg, var(--primary) 60%, var(--primary-dark) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; justify-content: center; gap: 20px; }
-.dashboard-panel { width: 100%; max-width: 650px; margin: 0 auto 28px auto; padding: 22px 0 12px 0; border-radius: 28px; box-shadow: var(--shadow); background: rgba(44,83,100,0.22); border: 2px solid var(--primary); }
-.dashboard-greeting .greet { font-size: 1.2rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; letter-spacing: 1.2px; text-shadow: var(--neon); }
-.dashboard-greeting .greet-sub { font-size: 1.1rem; color: #7b8ca6; font-weight: 600; margin-bottom: 10px; letter-spacing: 0.7px; }
-.dashboard-stats { display: flex; gap: 22px; justify-content: center; margin-top: 22px; flex-wrap: wrap; }
-.stat-card { background: rgba(44,83,100,0.32); border-radius: 18px; box-shadow: var(--shadow); padding: 22px 32px; text-align: center; min-width: 130px; margin-bottom: 12px; font-weight: 700; border: 2px solid var(--primary); }
-.stat-label { font-size: 1.1rem; color: #7b8ca6; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.7px; }
-.stat-value { font-size: 1.3rem; font-weight: 900; color: var(--primary); letter-spacing: 1.2px; text-shadow: var(--neon); }
-.stat-value.available { color: #00ffb3; }
-.stat-value.occupied { color: #ff3c3c; }
-.stat-card.yours .stat-value { color: #00ffb3; }
-.my-booking { font-size: 1.1rem; color: var(--primary); margin-bottom: 24px; font-weight: bold; text-align: center; background: rgba(44,83,100,0.32); border-radius: 14px; padding: 22px 0 12px 0; box-shadow: var(--shadow); letter-spacing: 0.7px; border: 2px solid var(--primary); }
-.cancel-btn { background: linear-gradient(90deg, #ff00cc 60%, #333399 100%); color: #fff; border: none; border-radius: 8px; padding: 8px 22px; font-size: 16px; font-weight: 800; cursor: pointer; transition: background var(--transition), transform var(--transition); text-decoration: none; display: inline-block; box-shadow: 0 2px 12px 0 #ff00cc44; margin-top: 10px; }
-.cancel-btn:hover { background: linear-gradient(90deg, #333399 60%, #ff00cc 100%); transform: scale(1.08); }
-.legend { display: flex; justify-content: center; gap: 40px; margin-bottom: 36px; font-size: 1.05rem; color: #00fff7; font-weight: 800; letter-spacing: 0.7px; text-shadow: var(--neon); background: rgba(44,83,100,0.32); border-radius: 18px; padding: 14px 32px; box-shadow: var(--shadow); border: 2px solid var(--primary); }
-.legend span { display: flex; align-items: center; gap: 10px; }
-.legend .slot-icon-bg { width: 40px; height: 40px; margin-bottom: 0; border-radius: 14px; box-shadow: var(--shadow); }
-.parking-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr) 80px repeat(5, 1fr);
-    gap: 28px;
-    max-width: 950px;
-    margin: 0 auto;
-    justify-items: center;
-    margin-top: 16px;
-    margin-bottom: 36px;
+
+/* --- Responsive adjustments --- */
+@media (max-width: 992px) {
+  .dashboard-tables {
+    grid-template-columns: 1fr;
+  }
+  .booking-page-layout {
+    grid-template-columns: 1fr;
+  }
 }
-.parking-grid > form:nth-child(n+1):nth-child(-n+5),
-.parking-grid > form:nth-child(n+6):nth-child(-n+10) { grid-column: 1; }
-.parking-grid > form:nth-child(n+11):nth-child(-n+15),
-.parking-grid > form:nth-child(n+16):nth-child(-n+20) { grid-column: 7; }
-.parking-slot { background: rgba(44,83,100,0.32); border: 2px solid var(--primary); box-shadow: var(--shadow); padding: 0; margin: 0; outline: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.2s, border-color 0.2s; position: relative; border-radius: 18px; }
-.parking-slot:disabled { cursor: not-allowed; opacity: 0.7; }
-.parking-slot:active { transform: scale(0.97); }
-.parking-slot:hover:enabled { box-shadow: 0 8px 32px 0 #00fff7cc; border-color: #00fff7; background: rgba(0,255,247,0.10); transform: scale(1.12); }
-.slot-icon-bg { width: 68px; height: 68px; border-radius: 22px; background: #222c36; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; margin-bottom: 9px; }
-.slot-car-icon { font-size: 2.3rem; color: #00fff7; text-shadow: var(--neon); }
-.available .slot-icon-bg, .legend .available { background: #0f2027; box-shadow: 0 2px 8px 0 #00ffb3a0; }
-.available .slot-car-icon, .legend .available .slot-car-icon { color: #00ffb3; }
-.occupied .slot-icon-bg, .legend .occupied { background: #222c36; box-shadow: 0 2px 8px 0 #ff3c3ca0; }
-.occupied .slot-car-icon, .legend .occupied .slot-car-icon { color: #ff3c3c; }
-.yours .slot-icon-bg, .legend .yours { background: #2c5364; box-shadow: 0 2px 8px 0 #00ffb3a0; }
-.yours .slot-car-icon, .legend .yours .slot-car-icon { color: #00ffb3; }
-.parking-slot:focus-visible .slot-icon-bg { outline: 2.5px solid #00fff7; outline-offset: 2px; }
-.slot-label { display: block; font-size: 1.15rem; font-weight: 900; letter-spacing: 0.8px; color: #eaf6fb; text-align: center; margin-top: 3px; text-shadow: 0 1px 8px #00fff7a0; }
-.parking-slot::after { content: attr(data-tooltip); position: absolute; top: -34px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.92); color: #00fff7; padding: 7px 14px; font-size: 13px; border-radius: 7px; opacity: 0; pointer-events: none; white-space: nowrap; transition: 0.2s ease; z-index: 99; font-weight: 700; letter-spacing: 0.7px; box-shadow: 0 2px 8px #00fff7a0; }
-.parking-slot:hover::after { opacity: 1; }
-.message { padding: 14px 24px; font-size: 1.15rem; font-weight: 900; border-radius: 10px; margin: 24px auto; width: fit-content; animation: slideIn 0.3s ease-in-out; letter-spacing: 0.7px; box-shadow: var(--shadow); background: linear-gradient(90deg, #00fff7 60%, #2c5364 100%); color: #222c36; }
-.message.success { background: linear-gradient(90deg, #2ecc71 60%, #00fff7 100%); color: #222c36; }
-.message.warning { background: linear-gradient(90deg, #e74c3c 60%, #e67e22 100%); color: #fff; }
-.glass-card { background: rgba(44,83,100,0.32); box-shadow: var(--shadow); border-radius: 20px; backdrop-filter: blur(8px); }
-@keyframes slideIn { from { opacity: 0; transform: translateY(-12px);} to { opacity: 1; transform: translateY(0);} }
-@media (max-width: 900px) {
-  .container { flex-direction: column; }
-  .sidebar { width: 100%; flex-direction: row; height: auto; box-shadow: none; border-radius: 0 0 28px 28px; }
-  .main-content { padding: 24px 8px; }
-  .sidebar-title { padding: 14px 0 10px 0; font-size: 20px; }
-  .sidebar ul li a { padding: 10px 8px; font-size: 15px; }
-  .sidebar-user { padding: 8px 8px; font-size: 13px; }
-  .parking-slot { width: 80px; font-size: 14px; height: 80px; }
-  .slot-icon-bg { width: 48px; height: 48px; border-radius: 14px; }
-  .slot-car-icon { font-size: 1.5rem; }
-  .main-content { padding: 12px 2vw; }
+
+@media (max-width: 768px) {
+  body {
+    padding-left: 80px; /* Collapsed sidebar width */
+  }
+  .main-content {
+    padding: 20px;
+  }
+  .sidebar.collapsed {
+    /* Styles are already defined for collapsed state */
+  }
+  .sidebar:not(.collapsed) {
+    width: 80px; /* Force collapse on mobile */
+  }
+  .sidebar:not(.collapsed) .app-name,
+  .sidebar:not(.collapsed) .nav-text {
+    display: none; /* Hide text on mobile */
+  }
+  .sidebar:not(.collapsed) ul li a,
+  .sidebar:not(.collapsed) .sidebar-user {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
