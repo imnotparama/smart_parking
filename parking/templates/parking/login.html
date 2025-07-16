@@ -1,32 +1,92 @@
 {% extends "parking/base.html" %}
-{% block title %}Login | Smart Parking Analysis{% endblock %}
+
+{% block title %}Login | Smart Parking{% endblock %}
 
 {% block content %}
-<div class="auth-container">
-  <article class="auth-card glass-card">
-    <h2><i class="fa-solid fa-key"></i> Login</h2>
-    <p class="auth-subtext">Welcome back! Please enter your details.</p>
+{# This main wrapper creates the two-column layout #}
+<div class="auth-page-wrapper">
 
-    <form method="post" novalidate>
-      {% csrf_token %}
-      <div class="form-group">
-        <label for="{{ form.username.id_for_label }}">Username</label>
-        <div class="input-group">
-          <i class="fa-solid fa-user"></i>
-          {{ form.username }}
+    {# Left Column: Branding and Feature Promotion #}
+    <div class="auth-promo-panel">
+        <div class="promo-content">
+            <a href="{% url 'parking:home' %}" class="logo-link">
+                <i class="fa-solid fa-car-side"></i>
+                <span class="app-name">Smart Parking</span>
+            </a>
+            <h1 class="promo-title">Welcome Back</h1>
+            <p class="promo-subtitle">Your seamless parking experience is just a login away.</p>
+            
+            <ul class="feature-list">
+                <li>
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Real-time slot availability</span>
+                </li>
+                <li>
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Automated booking expiration</span>
+                </li>
+                <li>
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Personalized analytics dashboard</span>
+                </li>
+            </ul>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="{{ form.password.id_for_label }}">Password</label>
-        <div class="input-group">
-          <i class="fa-solid fa-lock"></i>
-          {{ form.password }}
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+    </div>
 
-    <p class="auth-link">No account? <a href="{% url 'signup' %}">Sign up</a></p>
-  </article>
+    {# Right Column: The Login Form #}
+    <div class="auth-form-panel">
+        <article class="auth-form glass-card">
+            <h2>Login to Your Account</h2>
+
+            {# Social login buttons for a more professional look #}
+            <div class="social-login">
+                <button class="btn btn-social google"><i class="fab fa-google"></i> Continue with Google</button>
+                <button class="btn btn-social github"><i class="fab fa-github"></i> Continue with GitHub</button>
+            </div>
+
+            <div class="separator">
+                <span>OR</span>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        {{ form.username }}
+                    </div>
+                    {{ form.username.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        {{ form.password }}
+                        {# New button to toggle password visibility #}
+                        <button type="button" class="password-toggle" id="passwordToggle">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    {{ form.password.errors }}
+                </div>
+                
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Remember Me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Login</button>
+            </form>
+
+            <p class="auth-link">
+                No account? <a href="{% url 'parking:signup_view' %}">Sign up</a>
+            </p>
+        </article>
+    </div>
 </div>
 {% endblock %}

@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "parking",
+    'background_task',
 ]
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -142,3 +143,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'hunterparama@gmail.com'  # <-- REPLACE with your full Gmail address
 EMAIL_HOST_PASSWORD = 'fzyfvturnwebjxke' # <-- This is your new App Password
 DEFAULT_FROM_EMAIL = 'hunterparama@gmail.com' # <-- REPLACE with your full Gmail address
+LOGIN_URL = 'parking:login_view'
+LOGIN_REDIRECT_URL = 'parking:home'
+LOGOUT_REDIRECT_URL = 'parking:login_view'

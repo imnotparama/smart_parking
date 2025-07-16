@@ -1,16 +1,36 @@
-{% extends "parking/base.html" %}
-{% block title %}Help | Smart Parking Analysis{% endblock %}
+yth{% extends "parking/base.html" %}
+
+{% block title %}Help{% endblock %}
+
 {% block content %}
-<h2 class="page-title"><i class="fa-solid fa-circle-question"></i> Help</h2>
-<p style="font-size:1.1rem;margin-bottom:24px;">
-  Need help? Email <a href="mailto:support@example.com">support@example.com</a> or check our documentation.
-</p>
-<ul style="margin-bottom:24px;">
-  <li>Double-click a slot number to copy it.</li>
-  <li>Use the theme toggle (top right) for dark/light mode.</li>
-  <li>Sidebar auto-collapses on mobile for more space.</li>
-  <li>Analytics page shows live booking stats.</li>
-</ul>
-<a href="{% url 'home' %}" class="btn btn-primary" style="font-weight:bold;">&larr; Back to Home</a>
-<p>Need something? Email <a href="mailto:support@example.com">hunterparama@gmail.com</a> or stay tuned—full docs coming soon.</p>
+<div class="page-container glass-card" style="max-width: 800px; margin: auto;">
+    <h2 class="page-title" style="border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+        <i class="fa-solid fa-circle-question"></i> Help & FAQ
+    </h2>
+
+    <div class="help-section">
+        <h4>How do I book a slot?</h4>
+        <p>
+            On the home page, simply click on any available green slot. This will select the slot and populate the booking form on the right. Fill in your vehicle details and click "Book Now".
+        </p>
+
+        <h4>How does the pricing work?</h4>
+        <p>
+            The price shown on each slot is for one hour. When you select a duration longer than one hour in the booking form, the total amount is updated automatically.
+        </p>
+
+        <h4>Where can I see my active booking?</h4>
+        <p>
+            Navigate to the "My Bookings" page from the sidebar. Your active booking will be displayed at the top with a live countdown timer.
+        </p>
+
+        <h4>How do I cancel a booking?</h4>
+        <p>
+            On the "My Bookings" page, find your active booking and click the "Cancel Booking" button.
+        </p>
+    </div>
+
+    {# MODIFIED: Added 'parking:' namespace to the URL tag #}
+    <a href="{% url 'parking:home' %}" class="btn btn-primary" style="margin-top: 24px;">&larr; Back to Home</a>
+</div>
 {% endblock %}

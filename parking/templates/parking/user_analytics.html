@@ -1,31 +1,37 @@
 {% extends "parking/base.html" %}
+
 {% block title %}My Analytics{% endblock %}
 
 {% block content %}
-<div class="page-container">
-    <h2 class="page-title"><i class="fa-solid fa-chart-pie"></i> My Analytics</h2>
-    <p class="page-subtitle">Here is a summary of your personal booking activity.</p>
-    
+<div class="page-container analytics-dashboard">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 class="page-title" style="margin-bottom: 0;">My Analytics</h2>
+        {# MODIFIED: Added 'parking:' namespace to the URL tag #}
+        <a href="{% url 'parking:home' %}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </div>
+    <p class="text-light" style="margin-top: -16px; margin-bottom: 32px;">Here is a summary of your personal booking activity.</p>
+
     <div class="stat-cards-grid">
         <div class="stat-card-pro">
-            <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
+            <div class="stat-icon">
+                <i class="fa-solid fa-ticket"></i>
+            </div>
             <div class="stat-info">
                 <h4>My Total Bookings</h4>
                 <p>{{ total_bookings }}</p>
             </div>
         </div>
+
         <div class="stat-card-pro">
-            <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div class="stat-icon">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+            </div>
             <div class="stat-info">
                 <h4>My Total Spent</h4>
                 <p>₹{{ total_spent|floatformat:2 }}</p>
             </div>
         </div>
-        <!-- You can add more user-specific stats here in the future -->
     </div>
     
-    <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top: 32px;">
-        <i class="fa-solid fa-arrow-left"></i> Back to Home
-    </a>
-</div>
+    </div>
 {% endblock %}

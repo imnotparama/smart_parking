@@ -1,96 +1,191 @@
 {% extends "parking/base.html" %}
+{% load static %}
+
 {% block title %}Select Your Parking Slot{% endblock %}
 
 {% block content %}
-<div class="booking-page-layout">
-  <!-- Left Side: Parking Layout -->
-  <div class="parking-layout-container glass-card">
-    <div class="layout-header">
-      <h2>
-        Parking Layout - Floor
-        <form method="get" class="floor-selector">
-          <select name="floor" onchange="this.form.submit()">
-            {% for f in all_floors %}
-              <option value="{{ f }}" {% if f == selected_floor %}selected{% endif %}>{{ f }}</option>
-            {% endfor %}
-          </select>
-        </form>
-      </h2>
-      <div class="legend">
-        <span><span class="legend-box available"></span> Available</span>
-        <span><span class="legend-box occupied"></span> Occupied</span>
-        <!-- ✅ NEW: Legend for user's own booked slot -->
-        <span><span class="legend-box yours"></span> Your Booking</span>
-        <span><span class="legend-box handicap"></span> Handicap</span>
-        <span><span class="legend-box ev"></span> EV</span>
-      </div>
-    </div>
+<div class="page-container">
     
-    {% for section, slots_in_section in sections.items %}
-      <div class="parking-section">
-        <h3>Section {{ section }}</h3>
-        <div class="slot-grid">
-          {% for slot in slots_in_section %}
-            <div 
-              class="parking-slot 
-                {% if not slot.is_available and slot.id != user_active_booking.slot.id %}occupied{% endif %} 
-                {% if slot.is_handicap %}handicap{% endif %} 
-                {% if slot.is_ev_charging %}ev{% endif %}
-                {# ✅ MODIFIED: Add 'yours' class if this is the user's active booking #}
-                {% if slot.id == user_active_booking.slot.id %}yours{% endif %}"
-              data-slot-id="{{ slot.id }}"
-              data-slot-name="{{ slot.section }}{{ slot.number }}"
-              data-price="{{ slot.price }}"
-              tabindex="0">
-              <span class="slot-name">{{ slot.section }}{{ slot.number }}</span>
-              <span class="slot-price">₹{{ slot.price }}</span>
-              <div class="slot-icons">
-                {% if not slot.is_available and slot.id != user_active_booking.slot.id %}<i class="fa-solid fa-times"></i>{% endif %}
-                {% if slot.id == user_active_booking.slot.id %}<i class="fa-solid fa-user-check"></i>{% endif %}
-                {% if slot.is_handicap %}<i class="fa-solid fa-wheelchair"></i>{% endif %}
-                {% if slot.is_ev_charging %}<i class="fa-solid fa-bolt"></i>{% endif %}
-              </div>
+    <!-- ====================================================================== -->
+    <!-- == 1. UPGRADED DASHBOARD HEADER                                     == -->
+    <!-- ====================================================================== -->
+    <!-- This section provides a personalized greeting and real-time stats, -->
+    <!-- making the page feel more like a dynamic dashboard.                -->
+    <!-- ====================================================================== -->
+    <div class="page-header">
+        <div>
+            <h2 class="page-title" style="border: none; padding: 0; margin: 0;">{{ greeting }}</h2>
+            <p class="text-light" style="margin-top: 4px;">Select an available slot to begin your booking.</p>
+        </div>
+        <div class="stat-cards-grid" style="gap: 16px; margin-bottom: 0;">
+            <div class="stat-card-pro" style="padding: 16px;">
+                <div class="stat-icon"><i class="fa-solid fa-car"></i></div>
+                <div class="stat-info">
+                    <h4>Total Slots</h4>
+                    <p>{{ stats.total }}</p>
+                </div>
             </div>
-          {% endfor %}
+            <div class="stat-card-pro" style="padding: 16px;">
+                <div class="stat-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="stat-info">
+                    <h4>Available</h4>
+                    <p>{{ stats.available }}</p>
+                </div>
+            </div>
+            <div class="stat-card-pro" style="padding: 16px;">
+                <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="stat-info">
+                    <h4>Occupancy</h4>
+                    <p>{{ stats.occupancy }}%</p>
+                </div>
+            </div>
         </div>
-      </div>
-    {% endfor %}
-  </div>
+    </div>
 
-  <!-- Right Side: Booking Form or Guest Call to Action -->
-  <div class="booking-form-container">
-    {% if user.is_authenticated %}
-      <div class="booking-summary glass-card">
-        <h3>Booking Summary</h3>
-        <div class="summary-item"><span>Location:</span> <strong>Central Mall Parking</strong></div>
-        <div class="summary-item"><span>Slot:</span> <strong id="summary-slot">--</strong></div>
-        <hr>
-        <div class="summary-item total"><span>Total Amount:</span> <strong id="summary-amount">₹0.00</strong></div>
-      </div>
+    <!-- ====================================================================== -->
+    <!-- == 2. MAIN BOOKING LAYOUT                                           == -->
+    <!-- ====================================================================== -->
+    <div class="booking-page-layout">
+        
+        <!-- ====================================================================== -->
+        <!-- == Left Column: Interactive Parking Grid                          == -->
+        <!-- ====================================================================== -->
+        <div class="parking-layout-container glass-card">
+            <div class="layout-header">
+                <h3>Parking Layout</h3>
+                <div class="legend">
+                    <span><span class="legend-box available"></span> Available</span>
+                    <span><span class="legend-box occupied"></span> Occupied</span>
+                    <span><span class="legend-box yours"></span> Your Booking</span>
+                </div>
+            </div>
 
-      <form method="post" action="{% url 'book_slot' %}" class="booking-details-form glass-card">
-        <h3>Booking Details</h3>
-        {% csrf_token %}
-        {{ form.slot_id }}
-        <div class="form-group">{{ form.vehicle_number.label_tag }} {{ form.vehicle_number }}</div>
-        <div class="form-row">
-          <div class="form-group">{{ form.parking_date.label_tag }} {{ form.parking_date }}</div>
-          <div class="form-group">{{ form.start_time.label_tag }} {{ form.start_time }}</div>
+            <!-- NEW: Search and Filter Bar -->
+            <div class="filter-controls">
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="slotSearchInput" placeholder="Search for a slot (e.g., A5)">
+                </div>
+                <div class="filter-checkboxes">
+                    <label><input type="checkbox" name="filter" value="handicap"> <i class="fa-solid fa-wheelchair"></i> Handicap</label>
+                    <label><input type="checkbox" name="filter" value="ev"> <i class="fa-solid fa-bolt"></i> EV Charging</label>
+                </div>
+            </div>
+            
+            {% for section_name, slots_in_section in sections.items %}
+                <div class="parking-section">
+                    <h4>{{ section_name }}</h4>
+                    <div class="slot-grid">
+                        {% for slot in slots_in_section %}
+                            <div 
+                                class="parking-slot 
+                                    {% if slot.status == 'AVAILABLE' %}available
+                                    {% elif slot.active_booking.user == request.user %}yours
+                                    {% else %}occupied
+                                    {% endif %}
+                                    {% if slot.is_handicap %}handicap{% endif %}
+                                    {% if slot.is_ev_charging %}ev{% endif %}"
+                                data-slot-id="{{ slot.id }}"
+                                data-slot-name="{{ slot.section }}{{ slot.number }}"
+                                data-price="{{ slot.price }}"
+                                tabindex="0">
+                                
+                                <span class="slot-name">{{ slot.section }}{{ slot.number }}</span>
+                                <span class="slot-price">₹{{ slot.price|floatformat:0 }}</span>
+                                
+                                <div class="slot-icons">
+                                    {% if slot.is_handicap %}<i class="fa-solid fa-wheelchair"></i>{% endif %}
+                                    {% if slot.is_ev_charging %}<i class="fa-solid fa-bolt"></i>{% endif %}
+                                    {% if slot.status != 'AVAILABLE' and slot.active_booking.user == request.user %}
+                                        <i class="fa-solid fa-user-check" style="color: var(--info);"></i>
+                                    {% elif slot.status != 'AVAILABLE' %}
+                                        <i class="fa-solid fa-times"></i>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% empty %}
+                <p style="color: var(--danger); font-size: 1.2rem; text-align: center; padding: 2rem;">
+                    No parking slots found. Please run the `seed_slots` command.
+                </p>
+            {% endfor %}
         </div>
-        <div class="form-group">{{ form.duration.label_tag }} {{ form.duration }}</div>
-        <div class="form-group">{{ form.payment_method.label_tag }} {{ form.payment_method }}</div>
-        <button type="submit" id="book-now-btn" class="btn btn-primary" disabled>Select a Slot</button>
-      </form>
-    {% else %}
-      <div class="guest-cta-card glass-card">
-        <h3>Join to Book Your Spot</h3>
-        <p>Create an account or log in to book your parking slot in seconds.</p>
-        <div class="cta-buttons">
-          <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
-          <a href="{% url 'signup' %}" class="btn btn-secondary">Sign Up</a>
+
+        <!-- ====================================================================== -->
+        <!-- == Right Column: Booking Form & Summary                           == -->
+        <!-- ====================================================================== -->
+        <div class="booking-form-container">
+            {% if user.is_authenticated %}
+                <div class="booking-summary glass-card">
+                    <h3>Booking Summary</h3>
+                    <div class="summary-item">
+                        <span>Location:</span> 
+                        <strong>Central Mall Parking</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Slot:</span> 
+                        <strong id="summary-slot">--</strong>
+                    </div>
+                    <hr style="border-color: var(--border); margin: 16px 0;">
+                    <div class="summary-item total">
+                        <span>Total Amount:</span> 
+                        <strong id="summary-amount">₹0.00</strong>
+                    </div>
+                </div>
+
+                <form method="post" action="{% url 'parking:book_slot' %}" class="booking-details-form glass-card">
+                    <h3>Booking Details</h3>
+                    {% csrf_token %}
+                    
+                    <!-- This hidden input is crucial for the JavaScript to work -->
+                    {{ form.slot_id }}
+
+                    <div class="form-group">
+                        {{ form.vehicle_number.label_tag }} 
+                        {{ form.vehicle_number }}
+                        <div class="form-error">{{ form.vehicle_number.errors }}</div>
+                    </div>
+
+                    <div class="form-row" style="display: flex; gap: 1rem;">
+                        <div class="form-group" style="flex: 1;">
+                            {{ form.parking_date.label_tag }} 
+                            {{ form.parking_date }}
+                            <div class="form-error">{{ form.parking_date.errors }}</div>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            {{ form.start_time.label_tag }} 
+                            {{ form.start_time }}
+                            <div class="form-error">{{ form.start_time.errors }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.duration.label_tag }}
+                        {{ form.duration }}
+                        <div class="form-error">{{ form.duration.errors }}</div>
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.payment_method.label_tag }}
+                        {{ form.payment_method }}
+                        <div class="form-error">{{ form.payment_method.errors }}</div>
+                    </div>
+                    
+                    <button type="submit" id="book-now-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" disabled>Select a Slot</button>
+                </form>
+            {% else %}
+                <div class="guest-cta-card glass-card">
+                    <h3>Join to Book Your Spot</h3>
+                    <p>Log in or create an account to book your parking slot in seconds.</p>
+                    <div class="cta-buttons">
+                        <a href="{% url 'parking:login_view' %}" class="btn btn-primary">Login</a>
+                        <a href="{% url 'parking:signup_view' %}" class="btn btn-secondary">Sign Up</a>
+                    </div>
+                </div>
+            {% endif %}
         </div>
-      </div>
-    {% endif %}
-  </div>
+    </div>
 </div>
 {% endblock %}

@@ -1,38 +1,95 @@
 {% extends "parking/base.html" %}
+{% load static %}
+
 {% block title %}Sign Up | Smart Parking Analysis{% endblock %}
 
 {% block content %}
-<div class="auth-container">
-  <article class="auth-card glass-card">
-    <h2><i class="fa-solid fa-pen-to-square"></i> Create Your Account</h2>
-    <p class="auth-subtext">Join us to book your parking spot in seconds.</p>
+{# This main wrapper creates the two-column layout for the signup page #}
+<div class="auth-page-wrapper">
 
-    <form method="post" novalidate>
-      {% csrf_token %}
-      {% for field in form %}
-        <div class="form-group">
-          {{ field.label_tag }}
-          <div class="input-group">
-            {% if field.name == 'username' %}
-              <i class="fa-solid fa-user"></i>
-            {% elif field.name == 'email' %}
-              <i class="fa-solid fa-envelope"></i>
-            {% elif 'password' in field.name %}
-              <i class="fa-solid fa-lock"></i>
-            {% elif field.name == 'phone_number' %}
-              <i class="fa-solid fa-phone"></i>
-            {% endif %}
-            {{ field }}
-          </div>
-          {% if field.errors %}
-            <small class="error-message">{{ field.errors|first }}</small>
-          {% endif %}
+    {# Left Column: Branding and Feature Promotion #}
+    <div class="auth-promo-panel">
+        <div class="promo-content">
+            <a href="{% url 'parking:home' %}" class="logo-link">
+                <i class="fa-solid fa-car-side"></i>
+                <span class="app-name">Smart Parking</span>
+            </a>
+            <h1 class="promo-title">Create Your Account</h1>
+            <p class="promo-subtitle">Join a community of smart drivers. Get started in seconds.</p>
+            
+            <ul class="feature-list">
+                <li>
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Instantly find and book available slots.</span>
+                </li>
+                <li>
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Manage all your bookings in one place.</span>
+                </li>
+                <li>
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Track your spending with personal analytics.</span>
+                </li>
+                <li>
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Secure, automated, and hassle-free.</span>
+                </li>
+            </ul>
         </div>
-      {% endfor %}
-      <button type="submit" class="btn btn-primary">Sign Up</button>
-    </form>
+    </div>
 
-    <p class="auth-link">Already have an account? <a href="{% url 'login' %}">Log In</a></p>
-  </article>
+    {# Right Column: The Signup Form #}
+    <div class="auth-form-panel">
+        <article class="auth-form glass-card">
+            <h2><i class="fa-solid fa-pen-to-square"></i> Get Started</h2>
+            <p class="auth-subtext" style="text-align: center; margin-top: -16px; margin-bottom: 24px; color: var(--text-light);">Create an account to access all features.</p>
+            
+            {# This form will automatically display validation errors from Django #}
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                {# Loop through each field in the Django form to render it #}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        <div class="input-group">
+                            {# Add specific icons based on the field name #}
+                            {% if field.name == 'username' %}
+                                <i class="fa-solid fa-user"></i>
+                            {% elif field.name == 'email' %}
+                                <i class="fa-solid fa-envelope"></i>
+                            {% elif 'password' in field.name %}
+                                <i class="fa-solid fa-lock"></i>
+                            {% elif field.name == 'phone_number' %}
+                                <i class="fa-solid fa-phone"></i>
+                            {% endif %}
+                            
+                            {{ field }}
+                        </div>
+                        
+                        {# Display any errors for this specific field #}
+                        {% if field.errors %}
+                            <div class="form-error">
+                                {{ field.errors|first }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                {# Display non-field errors (e.g., "Username already exists") if any #}
+                {% if form.non_field_errors %}
+                    <div class="form-error" style="text-align: center; margin-bottom: 1rem;">
+                        {{ form.non_field_errors|first }}
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 1rem;">Create Account</button>
+            </form>
+
+            <p class="auth-link">
+                Already have an account? <a href="{% url 'parking:login_view' %}">Log In</a>
+            </p>
+        </article>
+    </div>
 </div>
 {% endblock %}
