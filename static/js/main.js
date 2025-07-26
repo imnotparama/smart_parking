@@ -1,11 +1,10 @@
 /**
- * Smart Parking Analysis - Main JavaScript File v9.0 (Modal Removed)
+ * Smart Parking Analysis - Main JavaScript File v11.0 (Final Fix)
  *
  * This file handles all frontend interactivity, including:
  * - Theme and sidebar state management.
  * - Interactive booking form with real-time updates.
- * - Live search and filtering for parking slots.
- * - A countdown timer for active bookings.
+ * - A countdown timer for active bookings that auto-refreshes the page on expiration.
  */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -90,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Creates a live countdown timer on the "My Bookings" page.
+     * Creates a live countdown timer on the "My Bookings" page that
+     * auto-refreshes the page when the timer expires.
      */
     function initializeCountdownTimer() {
         const activeBookingCard = document.getElementById('activeBookingCard');
@@ -102,11 +102,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const timerInterval = setInterval(() => {
             const now = new Date().getTime();
             const distance = endTime - now;
+
             if (distance < 0) {
                 clearInterval(timerInterval);
-                countdownElement.textContent = "EXPIRED";
+                countdownElement.textContent = "COMPLETED";
+                
+                // --- THE FIX IS HERE ---
+                // Reload the page after 2 seconds to move the booking to history.
+                // This gives the backend task time to process.
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
                 return;
             }
+
             const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
             const minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
             const seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
@@ -119,5 +128,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeSidebar();
     initializeBookingPage();
     initializeCountdownTimer();
-    // The initializeConfirmationModal() function has been completely removed.
 });

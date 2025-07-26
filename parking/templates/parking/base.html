@@ -18,6 +18,7 @@
     <button class="theme-toggle" id="themeToggle" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
 
     <aside class="sidebar" id="sidebar">
+        <!-- Sidebar content remains the same -->
         <div class="sidebar-title">
             <a href="{% url 'parking:home' %}" class="logo-link"><i class="fa-solid fa-car-side"></i><span class="app-name">Smart Parking</span></a>
         </div>
@@ -52,7 +53,7 @@
         {% block content %}{% endblock %}
     </main>
     
-    {# The custom modal container has been removed from here. #}
+    {# The modal container has been completely removed from here. #}
 
     <script src="{% static 'js/main.js' %}"></script>
 </body>

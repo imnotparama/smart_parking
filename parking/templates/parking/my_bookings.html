@@ -9,6 +9,7 @@
         <h2 class="page-title"><i class="fa-solid fa-ticket"></i> My Bookings</h2>
     </div>
 
+    <!-- Active Booking Section -->
     <div class="active-booking-container">
         <h3>Active Booking</h3>
         {% if active_bookings %}
@@ -27,6 +28,8 @@
                     <div class="countdown-timer" id="countdownTimer">--:--:--</div>
                 </div>
                 <div class="actions">
+                    {# --- THE FIX IS HERE --- #}
+                    {# Reverted to a standard browser confirmation prompt #}
                     <form action="{% url 'parking:cancel_booking' booking.id %}" method="post" 
                           onsubmit="return confirm('Are you sure you want to cancel your booking for slot {{ booking.slot }}?');">
                         {% csrf_token %}
@@ -48,6 +51,7 @@
         {% endif %}
     </div>
 
+    <!-- Booking History Section -->
     <div class="past-bookings-container" style="margin-top: 40px;">
         <h3>Booking History</h3>
         <div class="past-bookings-list">
