@@ -1,14 +1,28 @@
 {% extends "parking/base.html" %}
-{% block title %}Admin Dashboard | Smart Parking Analysis{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Admin Analytics | Smart Parking{% endblock %}
 
 {% block content %}
-<div class="page-container admin-dashboard">
-    <div class="dashboard-header">
-        <h1 class="page-title"><i class="fa-solid fa-user-shield"></i> Admin Dashboard</h1>
+<div class="page-container" id="adminDashboard">
+
+    <!-- =================================== -->
+    <!-- ==      PAGE HEADER              == -->
+    <!-- =================================== -->
+    <div class="page-header">
+        <h1 class="page-title"><i class="fa-solid fa-chart-line"></i> Admin Analytics</h1>
+        <a href="{% url 'parking:home' %}" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span class="btn-text">Back to Home</span>
+        </a>
     </div>
-    
-    <!-- Stat Cards -->
+
+    <!-- =================================== -->
+    <!-- ==      STATISTICS CARDS         == -->
+    <!-- =================================== -->
     <div class="stat-cards-grid">
+        <!-- Total Users Card -->
         <div class="stat-card-pro glass-card">
             <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
             <div class="stat-info">
@@ -16,13 +30,17 @@
                 <p>{{ total_users }}</p>
             </div>
         </div>
+
+        <!-- Total Slots Card -->
         <div class="stat-card-pro glass-card">
             <div class="stat-icon"><i class="fa-solid fa-car"></i></div>
             <div class="stat-info">
-                <h4>Total Slots</h4>
-                <p>{{ total_slots }}</p>
+                <h4>Available Slots</h4>
+                <p>{{ available_slots_count }} / {{ total_slots }}</p>
             </div>
         </div>
+
+        <!-- Total Bookings Card -->
         <div class="stat-card-pro glass-card">
             <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
             <div class="stat-info">
@@ -30,86 +48,143 @@
                 <p>{{ total_bookings }}</p>
             </div>
         </div>
+
+        <!-- Total Revenue Card -->
         <div class="stat-card-pro glass-card">
             <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
             <div class="stat-info">
                 <h4>Total Revenue</h4>
-                <p>₹{{ total_revenue|floatformat:2 }}</p>
+                <p>₹{{ total_revenue|floatformat:2|intcomma }}</p>
             </div>
         </div>
     </div>
 
-    <!-- Recent Activity & New Users Tables -->
-    <div class="dashboard-tables">
-        <div class="table-container glass-card">
-            <h3>Recent Bookings</h3>
-            <div class="table-wrapper">
-                <table class="table">
-                    <thead><tr><th>User</th><th>Slot</th><th>Booked At</th></tr></thead>
+
+    <!-- =================================== -->
+    <!-- ==      CHARTS & VISUALS         == -->
+    <!-- =================================== -->
+    <div class="admin-grid-layout mt-3">
+        <!-- Revenue Chart Panel -->
+        <div class="admin-panel chart-panel" style="grid-column: 1 / -1; md:grid-column: 1 / 8;">
+            <div class="admin-panel-header">
+                <h3 class="admin-panel-title"><i class="fa-solid fa-arrow-trend-up"></i> Revenue Over Time</h3>
+            </div>
+            <div class="chart-container">
+                <!-- This canvas will be populated by main.js -->
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Booking Status Chart Panel -->
+        <div class="admin-panel chart-panel" style="grid-column: 1 / -1; md:grid-column: 8 / -1;">
+            <div class="admin-panel-header">
+                <h3 class="admin-panel-title"><i class="fa-solid fa-pie-chart"></i> Booking Status</h3>
+            </div>
+            <div class="chart-container">
+                <!-- This canvas will be populated by main.js -->
+                <canvas id="bookingsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =================================== -->
+    <!-- ==      DATA TABLES              == -->
+    <!-- =================================== -->
+    <div class="admin-grid-layout mt-3">
+
+        <!-- Recent Bookings Panel -->
+        <div class="admin-panel recent-bookings-panel" style="grid-column: 1 / -1;">
+            <div class="admin-panel-header">
+                <h3 class="admin-panel-title"><i class="fa-solid fa-clock-rotate-left"></i> Recent Bookings</h3>
+                <div class="panel-options">
+                    <a href="#" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+            </div>
+            <div class="admin-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th class="sortable">User</th>
+                            <th class="sortable">Slot</th>
+                            <th class="sortable">Booked At</th>
+                            <th>Duration</th>
+                            <th>Cost</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         {% for booking in recent_bookings %}
                         <tr>
-                            <td>{{ booking.user.username }}</td>
-                            <td>{{ booking.slot }}</td>
-                            <td>{{ booking.booked_at|timesince }} ago</td>
+                            <td data-label="User">
+                                <div class="user-cell">
+                                    <span>{{ booking.user.username }}</span>
+                                </div>
+                            </td>
+                            <td data-label="Slot">{{ booking.slot.slot_name }} ({{ booking.slot.floor }})</td>
+                            <td data-label="Booked At">{{ booking.start_time|naturaltime }}</td>
+                            <td data-label="Duration">{{ booking.duration }} hr(s)</td>
+                            <td data-label="Cost">₹{{ booking.total_cost|floatformat:2 }}</td>
+                            <td data-label="Status">
+                                {% if booking.is_active %}
+                                    <span class="status-badge status-active">Active</span>
+                                {% else %}
+                                    <span class="status-badge status-completed">Completed</span>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="3" class="no-data-cell">No bookings yet.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="table-container glass-card">
-            <h3>Newest Users</h3>
-            <div class="table-wrapper">
-                <table class="table">
-                    <thead><tr><th>Username</th><th>Email</th><th>Date Joined</th></tr></thead>
-                    <tbody>
-                        {% for u in recent_users %}
                         <tr>
-                            <td>{{ u.username }}</td>
-                            <td>{{ u.email|default:"No email" }}</td>
-                            <td>{{ u.date_joined|date:"d M, Y" }}</td>
+                            <td colspan="6" class="text-center text-light p-4">No recent bookings found.</td>
                         </tr>
-                        {% empty %}
-                        <tr><td colspan="3" class="no-data-cell">No new users yet.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
 
-    <!-- NEW: Top Booking Users Table -->
-    <div class="table-container glass-card" style="margin-top: 24px;">
-        <h3><i class="fa-solid fa-crown"></i> Top Booking Users</h3>
-        <div class="table-wrapper">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Total Bookings</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in top_booking_users %}
-                    <tr>
-                        <td>{{ user.username }}</td>
-                        <td>{{ user.email|default:"No email" }}</td>
-                        <td><strong>{{ user.booking_count }}</strong></td>
-                    </tr>
-                    {% empty %}
-                    <tr><td colspan="3" class="no-data-cell">No users have made bookings yet.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- New Users Panel -->
+        <div class="admin-panel new-users-panel" style="grid-column: 1 / -1;">
+            <div class="admin-panel-header">
+                <h3 class="admin-panel-title"><i class="fa-solid fa-user-plus"></i> Newest Users</h3>
+            </div>
+            <div class="admin-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th class="sortable">Username</th>
+                            <th class="sortable">Email</th>
+                            <th class="sortable">Joined On</th>
+                            <th>Bookings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in new_users %}
+                        <tr>
+                            <td data-label="Username">
+                                <div class="user-cell">
+                                    <span>{{ user.username }}</span>
+                                </div>
+                            </td>
+                            <td data-label="Email">{{ user.email|default:"Not Provided" }}</td>
+                            <td data-label="Joined On">{{ user.date_joined|date:"d M, Y" }}</td>
+                            <td data-label="Bookings">{{ user.booking_set.count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-light p-4">No new users found in the last week.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
+
     </div>
 
-    <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top: 32px; font-weight: bold;">
-        <i class="fa-solid fa-arrow-left"></i> Back to Home
-    </a>
 </div>
+
+<!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 {% endblock %}

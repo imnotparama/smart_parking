@@ -1,11 +1,8 @@
-"""
-Django settings for smart_parking project.
-Generated (and hand‑tuned) July 2025.
-"""
-
 from pathlib import Path
 import os
-from datetime import timedelta   # not used yet, but handy for JWT / sessions
+from datetime import timedelta
+
+# This is necessary for Django to use pymysql with your MySQL database.
 import pymysql
 pymysql.install_as_MySQLdb()
 
@@ -19,9 +16,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ──────────────────────────────────────────────────────────────────────────
 SECRET_KEY = "django-insecure-CHANGE_THIS_TO_YOUR_OWN_48_CHAR_RANDOM_STRING"
 
-DEBUG = True  # <--- DEBUG ON for development! Set to False for production.
+# DEBUG should be True for development and False for production.
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']  # <--- Allow all for local debug. For production, use your domain(s).
+# Allow all hosts for local development. For production, list your domain(s).
+ALLOWED_HOSTS = ['*']
 
 # ──────────────────────────────────────────────────────────────────────────
 # APPLICATIONS
@@ -33,7 +32,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",  # <-- THIS IS THE FIX
+    # Local Apps
     "parking",
+    # Third-Party Apps
     'background_task',
 ]
 
@@ -59,11 +61,7 @@ ROOT_URLCONF = "smart_parking.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-
-        "DIRS": [BASE_DIR / "templates"],
-
-        "DIRS": [BASE_DIR / "templates"],  # <--- Add this for custom template dirs
-
+        "DIRS": [BASE_DIR / "templates"], # For project-level templates
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -86,7 +84,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'smart_parking_db',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'root', # Replace with your MySQL password if you have one
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -105,9 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # ──────────────────────────────────────────────────────────────────────────
 # AUTHENTICATION
 # ──────────────────────────────────────────────────────────────────────────
-LOGIN_URL = 'login'  # <--- Add this line!
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'login'
+# Use namespaced URLs to avoid conflicts
+LOGIN_URL = 'parking:login_view'
+LOGIN_REDIRECT_URL = 'parking:home'
+LOGOUT_REDIRECT_URL = 'parking:login_view'
 
 # ──────────────────────────────────────────────────────────────────────────
 # INTERNATIONALIZATION
@@ -118,31 +117,28 @@ USE_I18N = True
 USE_TZ = True
 
 # ──────────────────────────────────────────────────────────────────────────
-# STATIC & MEDIA
+# STATIC & MEDIA FILES
 # ──────────────────────────────────────────────────────────────────────────
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "staticfiles" # For production deployment
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # ──────────────────────────────────────────────────────────────────────────
-# DEFAULT PRIMARY KEY TYPE
+# EMAIL CONFIGURATION (for Gmail)
 # ──────────────────────────────────────────────────────────────────────────
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-# settings.py
-
-# settings.py
-
-# --- EMAIL SETTINGS (for Gmail) ---
+# You MUST generate a 16-digit "App Password" from your Google Account.
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'hunterparama@gmail.com'  # <-- REPLACE with your full Gmail address
-EMAIL_HOST_PASSWORD = 'fzyfvturnwebjxke' # <-- This is your new App Password
-DEFAULT_FROM_EMAIL = 'hunterparama@gmail.com' # <-- REPLACE with your full Gmail address
-LOGIN_URL = 'parking:login_view'
-LOGIN_REDIRECT_URL = 'parking:home'
-LOGOUT_REDIRECT_URL = 'parking:login_view'
+EMAIL_HOST_USER = 'hunterparama@gmail.com'
+EMAIL_HOST_PASSWORD = 'fzyfvturnwebjxke' # This is your App Password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# ──────────────────────────────────────────────────────────────────────────
+# DEFAULT PRIMARY KEY TYPE
+# ──────────────────────────────────────────────────────────────────────────
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

@@ -1,35 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f4f7f9; color: #212529; }
-        .container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
-        .header { text-align: center; border-bottom: 1px solid #dee2e6; padding-bottom: 24px; margin-bottom: 24px; }
-        .header h1 { color: #6a11cb; }
-        .booking-details { margin-bottom: 24px; }
-        .booking-details p { margin: 8px 0; }
-        .footer { text-align: center; color: #6c757d; font-size: 0.9rem; margin-top: 24px; }
+        /* Basic styling for email clients */
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+        .header { background-color: #00ff99; color: #10181f; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .footer { background-color: #f2f2f2; padding: 10px; text-align: center; font-size: 12px; color: #777; }
+        .booking-details { width: 100%; border-collapse: collapse; }
+        .booking-details th, .booking-details td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        .booking-details th { width: 40%; }
+        .total { font-size: 1.2em; font-weight: bold; color: #10181f; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Booking Confirmed!</h1>
-            <p>Smart Parking Analysis</p>
+            <h2>Smart Parking - Booking Confirmed!</h2>
         </div>
-        <div class="booking-details">
-            <p>Hi <strong>{{ user.username }}</strong>,</p>
-            <p>Your parking slot has been successfully booked. Here are your details:</p>
-            <ul>
-                <li><strong>Slot:</strong> {{ booking.slot }}</li>
-                <li><strong>Vehicle Number:</strong> {{ booking.vehicle_number }}</li>
-                <li><strong>Date:</strong> {{ booking.parking_date|date:"d M, Y" }}</li>
-                <li><strong>Time:</strong> {{ booking.start_time|time:"H:i A" }}</li>
-                <li><strong>Duration:</strong> {{ booking.duration_hours }} Hours</li>
-            </ul>
+        <div class="content">
+            <h3>Hi {{ booking.user.username }},</h3>
+            <p>Your parking booking has been successfully confirmed. Here are the details:</p>
+            <table class="booking-details">
+                <tr>
+                    <th>Booking ID:</th>
+                    <td>#{{ booking.id }}</td>
+                </tr>
+                <tr>
+                    <th>Parking Slot:</th>
+                    <td>{{ booking.slot.slot_name }} (Floor {{ booking.slot.floor }})</td>
+                </tr>
+                <tr>
+                    <th>Vehicle Number:</th>
+                    <td>{{ booking.vehicle_number }}</td>
+                </tr>
+                <tr>
+                    <th>Date:</th>
+                    <td>{{ booking.parking_date|date:"d M, Y" }}</td>
+                </tr>
+                 <tr>
+                    <th>Start Time:</th>
+                    <td>{{ booking.start_time|time:"H:i" }}</td>
+                </tr>
+                <tr>
+                    <th>End Time:</th>
+                    <td>{{ booking.end_time|date:"d M, Y" }} at {{ booking.end_time|time:"H:i" }}</td>
+                </tr>
+                <tr>
+                    <th>Duration:</th>
+                    <td>{{ booking.duration_hours }} hour(s)</td>
+                </tr>
+                <tr class="total">
+                    <th>Total Cost:</th>
+                    <td>₹{{ booking.total_cost|floatformat:2 }}</td>
+                </tr>
+            </table>
+            <p>Thank you for using Smart Parking!</p>
         </div>
         <div class="footer">
-            <p>Thank you for using our service. You can manage your bookings on your profile page.</p>
+            <p>&copy; {% now "Y" %} Smart Parking Inc. All rights reserved.</p>
         </div>
     </div>
 </body>

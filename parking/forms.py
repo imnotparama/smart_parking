@@ -1,60 +1,53 @@
 # parking/forms.py
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from .models import Booking, UserProfile
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
-from django.utils import timezone
-from .models import UserProfile
 from decimal import Decimal
 
-class BookingForm(forms.Form):
-    slot_id = forms.IntegerField(widget=forms.HiddenInput())
-
-    vehicle_number = forms.CharField(
-        label="Vehicle Number",
-        max_length=20,
-        widget=forms.TextInput(attrs={'placeholder': 'e.g., TN-01-AB-1234'})
-    )
-    parking_date = forms.DateField(
-        label="Parking date",
-        widget=forms.DateInput(attrs={'type': 'date', 'min': timezone.now().strftime('%Y-%m-%d')})
-    )
-    start_time = forms.TimeField(
-        label="Start time",
-        widget=forms.TimeInput(attrs={'type': 'time'})
-    )
-    
-    # --- UPGRADE: New duration choices in 30-minute intervals ---
-    # Generates choices from 0.5 hours to 8.0 hours
-    DURATION_CHOICES = [(f"{i * 0.5}", f"{i * 0.5} Hours") for i in range(1, 17)]
-    duration = forms.TypedChoiceField(
-        label="Duration",
-        choices=DURATION_CHOICES,
-        coerce=Decimal, # Ensures the form data is a Decimal
-        initial='1.0'
-    )
-    
-    payment_method = forms.ChoiceField(
-        label="Payment method",
-        choices=[('UPI', 'UPI'), ('CARD', 'Credit/Debit Card')],
-        initial='UPI'
-    )
-
 class CustomSignupForm(UserCreationForm):
-    phone_number = forms.CharField(max_length=15, required=True, label="Phone Number")
-    email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
+    email = forms.EmailField(max_length=254, required=True)
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = UserCreationForm.Meta.fields + ('email',)
+        fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'email')
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        if commit:
-            user.save()
-            UserProfile.objects.get_or_create(user=user, defaults={'phone_number': self.cleaned_data['phone_number']})
-        return user
+class CustomLoginForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username', 'class': 'form-control'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'class': 'form-control'}))
 
-class CustomLoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Enter username'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter password'}))
+class BookingForm(forms.ModelForm):
+    DURATION_CHOICES = [
+        (Decimal('1.00'), '1 Hour'), (Decimal('2.00'), '2 Hours'),
+        (Decimal('3.00'), '3 Hours'), (Decimal('4.00'), '4 Hours'),
+        (Decimal('5.00'), '5 Hours'), (Decimal('8.00'), '8 Hours (Half Day)'),
+        (Decimal('12.00'), '12 Hours (Full Day)'),
+    ]
+    PAYMENT_METHOD_CHOICES = [
+        ('UPI', 'UPI / Wallet'), ('CREDIT_CARD', 'Credit Card'),
+        ('DEBIT_CARD', 'Debit Card'), ('NET_BANKING', 'Net Banking'),
+    ]
+
+    duration_hours = forms.TypedChoiceField(
+        choices=DURATION_CHOICES, coerce=Decimal,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    payment_method = forms.ChoiceField(
+        choices=PAYMENT_METHOD_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    slot_id = forms.IntegerField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = Booking
+        fields = [
+            'vehicle_number', 'parking_date', 'start_time', 'duration_hours'
+        ]
+        widgets = {
+            'vehicle_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., TN 01 AB 1234'}),
+            'parking_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'start_time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+        }

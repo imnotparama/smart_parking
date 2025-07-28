@@ -1,5 +1,6 @@
 {% extends "parking/base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}My Bookings{% endblock %}
 
@@ -9,9 +10,11 @@
         <h2 class="page-title"><i class="fa-solid fa-ticket"></i> My Bookings</h2>
     </div>
 
-    <!-- Active Booking Section -->
+    <!-- =================================== -->
+    <!-- ==      Active Booking Section   == -->
+    <!-- =================================== -->
     <div class="active-booking-container">
-        <h3>Active Booking</h3>
+        <h3><i class="fa-solid fa-clock text-primary"></i> Active Booking</h3>
         {% if active_bookings %}
             {% for booking in active_bookings %}
             <div class="active-booking-card glass-card" id="activeBookingCard" data-end-time="{{ booking.end_time|date:'c' }}">
@@ -28,15 +31,18 @@
                     <div class="countdown-timer" id="countdownTimer">--:--:--</div>
                 </div>
                 <div class="actions">
-                    {# --- THE FIX IS HERE --- #}
-                    {# Reverted to a standard browser confirmation prompt #}
-                    <form action="{% url 'parking:cancel_booking' booking.id %}" method="post" 
+                    <!-- Cancel Booking Form -->
+                    <form action="{% url 'parking:cancel_booking' booking.id %}" method="post"
                           onsubmit="return confirm('Are you sure you want to cancel your booking for slot {{ booking.slot }}?');">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger">
                             <i class="fa-solid fa-ban"></i> Cancel Booking
                         </button>
                     </form>
+                    <!-- View Receipt Button -->
+                    <a href="{% url 'parking:booking_receipt' booking.id %}" class="btn btn-secondary">
+                        <i class="fa-solid fa-receipt"></i> View Receipt
+                    </a>
                 </div>
             </div>
             {% endfor %}
@@ -51,16 +57,35 @@
         {% endif %}
     </div>
 
-    <!-- Booking History Section -->
+    <!-- =================================== -->
+    <!-- ==    Booking History Section    == -->
+    <!-- =================================== -->
     <div class="past-bookings-container" style="margin-top: 40px;">
-        <h3>Booking History</h3>
+        <h3><i class="fa-solid fa-clock-rotate-left text-light"></i> Booking History</h3>
         <div class="past-bookings-list">
             {% for booking in past_bookings %}
             <div class="booking-history-card glass-card">
-                <div class="info"><strong>Slot {{ booking.slot }}</strong><span>{{ booking.vehicle_number }}</span></div>
-                <div class="info"><strong>{{ booking.parking_date|date:"D, d M Y" }}</strong><span>at {{ booking.start_time|time:"g:i A" }}</span></div>
-                <div class="info"><strong>₹{{ booking.slot.price|floatformat:2 }}</strong><span>for {{ booking.duration_hours|floatformat:1 }} Hour(s)</span></div>
-                <div class="status"><span class="status-badge status-{{ booking.status|lower }}">{{ booking.status }}</span></div>
+                <div class="info">
+                    <strong>Slot {{ booking.slot }}</strong>
+                    <span>{{ booking.vehicle_number }}</span>
+                </div>
+                <div class="info">
+                    <strong>{{ booking.parking_date|date:"D, d M Y" }}</strong>
+                    <span>{{ booking.start_time|time:"g:i A" }} for {{ booking.duration_hours|floatformat:1 }}hr</span>
+                </div>
+                <div class="info">
+                    <strong>Total Cost</strong>
+                    {# THIS IS THE FIX: Using the correct total_cost field #}
+                    <span>₹{{ booking.total_cost|floatformat:2 }}</span>
+                </div>
+                <div class="status">
+                    <span class="status-badge status-{{ booking.status|lower }}">{{ booking.get_status_display }}</span>
+                </div>
+                <div class="actions">
+                     <a href="{% url 'parking:booking_receipt' booking.id %}" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-receipt"></i> Receipt
+                    </a>
+                </div>
             </div>
             {% empty %}
             <div class="no-active-booking-card glass-card" style="margin-bottom: 0; padding: 2rem;">
