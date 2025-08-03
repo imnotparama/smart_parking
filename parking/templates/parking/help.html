@@ -1,36 +1,93 @@
-yth{% extends "parking/base.html" %}
+{% extends "parking/base.html" %}
+{% load static %}
 
-{% block title %}Help{% endblock %}
+{% block title %}Support & About{% endblock %}
 
 {% block content %}
-<div class="page-container glass-card" style="max-width: 800px; margin: auto;">
-    <h2 class="page-title" style="border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-        <i class="fa-solid fa-circle-question"></i> Help & FAQ
-    </h2>
-
-    <div class="help-section">
-        <h4>How do I book a slot?</h4>
-        <p>
-            On the home page, simply click on any available green slot. This will select the slot and populate the booking form on the right. Fill in your vehicle details and click "Book Now".
-        </p>
-
-        <h4>How does the pricing work?</h4>
-        <p>
-            The price shown on each slot is for one hour. When you select a duration longer than one hour in the booking form, the total amount is updated automatically.
-        </p>
-
-        <h4>Where can I see my active booking?</h4>
-        <p>
-            Navigate to the "My Bookings" page from the sidebar. Your active booking will be displayed at the top with a live countdown timer.
-        </p>
-
-        <h4>How do I cancel a booking?</h4>
-        <p>
-            On the "My Bookings" page, find your active booking and click the "Cancel Booking" button.
-        </p>
+<div class="page-container" style="max-width: 800px; margin: auto;">
+    <div class="page-header">
+        <h2 class="page-title"><i class="fa-solid fa-code"></i> About & Support</h2>
     </div>
 
-    {# MODIFIED: Added 'parking:' namespace to the URL tag #}
-    <a href="{% url 'parking:home' %}" class="btn btn-primary" style="margin-top: 24px;">&larr; Back to Home</a>
+    <div class="about-card glass-card">
+        <!-- Project Creator Section -->
+        <div class="about-section">
+            <h4><i class="fa-solid fa-laptop-code"></i> Project Creator</h4>
+            <p class="creator-name">
+                This Smart Parking Analysis project was designed and developed by <strong>Parameshwaran S</strong>.
+            </p>
+            <p class="text-light">
+                This application is a full-stack solution demonstrating modern web development techniques with Django, JavaScript, and advanced CSS.
+            </p>
+        </div>
+
+        <!-- Creator Profiles Section -->
+        <div class="about-section">
+            <h4><i class="fa-solid fa-globe"></i> Find Me Online</h4>
+            <div class="profile-links">
+                <a href="https://www.linkedin.com/in/parameshwaran-s-datascientist" target="_blank" class="btn btn-secondary">
+                    <i class="fa-brands fa-linkedin"></i> LinkedIn
+                </a>
+                <a href="https://github.com/imnotparama" target="_blank" class="btn btn-secondary">
+                    <i class="fa-brands fa-github"></i> GitHub
+                </a>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div class="about-section">
+            <h4><i class="fa-solid fa-headset"></i> Contact & Support</h4>
+            <p class="text-light">
+                For any problems, questions, or feedback regarding this application, please feel free to reach out directly.
+            </p>
+            <div class="support-contact">
+                <p>
+                    <strong>Support Email:</strong> 
+                    <a href="mailto:hunterparama@gmail.com">hunterparama@gmail.com</a>
+                </p>
+            </div>
+        </div>
+        
+        <a href="{% url 'parking:home' %}" class="btn btn-primary" style="margin-top: 24px;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
 </div>
+
+<!-- Simple styling for the new elements -->
+<style>
+    .about-card {
+        padding: 32px;
+    }
+    .about-section {
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border);
+    }
+    .about-section:last-of-type {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    .about-section h4 {
+        margin-bottom: 12px;
+        color: var(--text-light);
+    }
+    .creator-name {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+    .profile-links {
+        display: flex;
+        gap: 16px;
+    }
+    .support-contact a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .support-contact a:hover {
+        text-decoration: underline;
+    }
+</style>
 {% endblock %}
