@@ -7,9 +7,9 @@ class Command(BaseCommand):
     help = 'Seeds the database with initial parking slots.'
 
     def handle(self, *args, **kwargs):
-        self.stdout.write('Deleting existing parking slots...')
-        ParkingSlot.objects.all().delete()
-        
+        if ParkingSlot.objects.exists():
+            self.stdout.write('Parking slots already exist. Skipping seeding.')
+            return
         self.stdout.write('Creating new parking slots...')
         
         floors = [1] # Let's start with one floor for simplicity
