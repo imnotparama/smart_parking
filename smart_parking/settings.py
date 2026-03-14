@@ -16,13 +16,14 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-producti
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
-# Required by Vercel — set to your deployed domain
+# Required by Vercel — allow all https://*.vercel.app + localhost
 CSRF_TRUSTED_ORIGINS = [
-    f'https://{host}' for host in ALLOWED_HOSTS
-    if host not in ('localhost', '127.0.0.1')
-] + ['http://localhost:8000', 'http://127.0.0.1:8000']
+    'https://*.vercel.app',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 
 # ──────────────────────────────────────────────────────────────────────────
 # PRODUCTION SECURITY HEADERS (only active when DEBUG=False)
