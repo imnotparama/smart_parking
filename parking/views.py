@@ -15,6 +15,7 @@ from django.db.models.functions import TruncDay
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.mail import send_mail
+from django.views.decorators.csrf import csrf_exempt
 from collections import defaultdict
 from datetime import datetime, timedelta
 import pytz
@@ -237,3 +238,46 @@ def api_slots(request):
     """A simple API endpoint to provide real-time slot status."""
     slots_data = ParkingSlot.objects.all().values('id', 'status')
     return JsonResponse(list(slots_data), safe=False)
+
+
+# ==============================================================================
+# == 7. CRON JOB ENDPOINT (replaces django-background-tasks on Vercel)
+# ==============================================================================
+
+@csrf_exempt
+def process_tasks_cron(request):
+    """
+    Vercel cron endpoint — called every 10 minutes via vercel.json.
+    Finds all ACTIVE bookings whose end_time has passed and releases the slot.
+    Protected by a CRON_SECRET header to prevent abuse.
+    """
+    # Security check: only allow requests with the correct secret
+    cron_secret = settings.CRON_SECRET
+    if cron_secret:
+        provided = request.headers.get('Authorization', '')
+        if provided != f'Bearer {cron_secret}':
+            return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    now = timezone.now()
+    expired_bookings = Booking.objects.filter(
+        status=Booking.BookingStatus.ACTIVE,
+        end_time__lte=now
+    ).select_related('slot')
+
+    released = []
+    for booking in expired_bookings:
+        slot = booking.slot
+        slot.status = ParkingSlot.SlotStatus.AVAILABLE
+        slot.active_booking = None
+        slot.save()
+
+        booking.status = Booking.BookingStatus.COMPLETED
+        booking.save()
+        released.append(booking.booking_id)
+
+    return JsonResponse({
+        'status': 'ok',
+        'released_count': len(released),
+        'released_booking_ids': released,
+        'processed_at': now.isoformat(),
+    })
