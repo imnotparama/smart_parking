@@ -20,7 +20,6 @@ ENV/
 *.sqlite3
 db.json
 media/
-staticfiles/
 
 # Environment variables — NEVER commit real secrets
 .env
