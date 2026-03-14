@@ -10,6 +10,37 @@
     </div>
 
     <div class="about-card glass-card">
+        
+        <!-- App Walkthrough Section (New) -->
+        <div class="about-section">
+            <h4><i class="fa-solid fa-map"></i> How to Use Smart Parking</h4>
+            <p class="text-light" style="margin-bottom: 20px;">
+                Welcome to Smart Parking Analysis! Follow this quick guide to manage your parking needs seamlessly.
+            </p>
+            
+            <div class="walkthrough-steps">
+                <div class="step">
+                    <h5><span class="step-num">1</span> Find an Available Slot</h5>
+                    <p class="text-light">Go to the <strong><i class="fa-solid fa-house"></i> Home</strong> page. You will see a grid of all parking slots. Look for slots highlighted in <strong style="color: var(--success);">Green</strong> (Available). Occupied slots are <strong style="color: gray;">Grey</strong>. You can use the search bar to find a specific slot or filter to show only available ones.</p>
+                </div>
+                
+                <div class="step">
+                    <h5><span class="step-num">2</span> Make a Booking</h5>
+                    <p class="text-light">Click on any <strong style="color: var(--success);">Green</strong> available slot. The Booking Details panel on the right will update. Enter your Vehicle Number, select the Date, Time, and Duration, then pick a Payment Method. Finally, click <strong>Select a Slot</strong> to confirm your booking.</p>
+                </div>
+
+                <div class="step">
+                    <h5><span class="step-num">3</span> Manage Your Bookings</h5>
+                    <p class="text-light">Navigate to the <strong><i class="fa-solid fa-book"></i> My Bookings</strong> page to view your active and past reservations. Active bookings are highlighted in <strong style="color: var(--primary);">Blue</strong> on the home layout so you can easily find your car.</p>
+                </div>
+
+                <div class="step">
+                    <h5><span class="step-num">4</span> View Analytics</h5>
+                    <p class="text-light">Check out <strong><i class="fa-solid fa-chart-line"></i> My Analytics</strong> to see your parking history, total spending, and usage patterns over time. This helps you track your parking habits and expenses.</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Project Creator Section -->
         <div class="about-section">
             <h4><i class="fa-solid fa-laptop-code"></i> Project Creator</h4>
@@ -72,6 +103,37 @@
     .about-section h4 {
         margin-bottom: 12px;
         color: var(--text-light);
+    }
+    .walkthrough-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .step {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 16px 20px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+    }
+    .step h5 {
+        color: var(--white);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.1rem;
+    }
+    .step-num {
+        background: var(--primary);
+        color: var(--card-bg);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.9rem;
     }
     .creator-name {
         font-size: 1.1rem;
