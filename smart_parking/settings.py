@@ -173,3 +173,18 @@ CRON_SECRET = config('CRON_SECRET', default='')
 # DEFAULT PRIMARY KEY TYPE
 # ──────────────────────────────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ──────────────────────────────────────────────────────────────────────────
+# PASSWORD VALIDATORS (similarity check removed)
+# ──────────────────────────────────────────────────────────────────────────
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
