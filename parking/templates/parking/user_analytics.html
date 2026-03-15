@@ -6,51 +6,118 @@
 
 {% block content %}
 <div class="page-container analytics-dashboard">
-    <div class="page-header">
-        <h2 class="page-title"><i class="fa-solid fa-chart-pie"></i> My Analytics</h2>
-        <a href="{% url 'parking:home' %}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
-    </div>
-    <p class="text-light" style="margin-top: -16px; margin-bottom: 32px;">Here is a summary of your personal booking activity.</p>
-
-    <!-- Stat Cards -->
-    <div class="stat-cards-grid">
-        <div class="stat-card-pro glass-card">
-            <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
-            <div class="stat-info">
-                <h4>My Total Bookings</h4>
-                <p>{{ total_bookings }}</p>
-            </div>
+    <div class="page-header dashboard-header">
+        <div class="header-text">
+            <h2 class="page-title gradient-text"><i class="fa-solid fa-chart-pie"></i> My Analytics</h2>
+            <p class="text-light">Detailed insights for your personal booking activity.</p>
         </div>
-        <div class="stat-card-pro glass-card">
-            <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
-            <div class="stat-info">
-                <h4>My Total Spent</h4>
-                {# THIS IS THE FIX: Using the correct total_spent variable from the view #}
-                <p>₹{{ total_spent|floatformat:2|intcomma }}</p>
+        <div>
+            <a href="{% url 'parking:home' %}" class="btn modern-btn-sm"><i class="fa-solid fa-arrow-left me-2"></i> Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Ultra Stat Cards -->
+    <div class="stat-cards-hero mb-5">
+        <div class="stat-card-ultra glass-card hover-lift">
+            <div class="stat-icon-glow" style="--glow-color: var(--primary); --glow-dark: #064e3b;">
+                <i class="fa-solid fa-ticket"></i>
             </div>
+            <div class="stat-content">
+                <span class="stat-label">Total Bookings</span>
+                <span class="stat-value">{{ total_bookings }}</span>
+                <div class="stat-trend" style="color: var(--primary);"><i class="fa-solid fa-arrow-trend-up"></i> Lifetime</div>
+            </div>
+            <div class="stat-bg-decorator" style="background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);"></div>
+        </div>
+        <div class="stat-card-ultra glass-card hover-lift">
+            <div class="stat-icon-glow" style="--glow-color: #10b981; --glow-dark: #064e3b;">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Total Spent</span>
+                <span class="stat-value text-success-gradient">₹{{ total_spent|floatformat:2|intcomma }}</span>
+                <div class="stat-trend text-success"><i class="fa-solid fa-coins"></i> Investment</div>
+            </div>
+            <div class="stat-bg-decorator" style="background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);"></div>
         </div>
     </div>
 
     <!-- Charts Grid -->
-    <div class="admin-grid-layout mt-3">
-        <div class="admin-panel chart-panel" style="grid-column: 1 / -1; md:grid-column: 1 / 7;">
-            <div class="admin-panel-header">
-                <h3 class="admin-panel-title"><i class="fa-solid fa-wallet"></i> Spending by Section</h3>
+    <div class="charts-grid-layout">
+        <div class="glass-card chart-wrapper hover-lift">
+            <div class="layout-header-modern pb-3 mb-4 border-bottom" style="border-color: var(--input-border) !important;">
+                <h3><div class="icon-badge bg-cyan"><i class="fa-solid fa-wallet"></i></div> Spending by Section</h3>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" style="position: relative; height: 350px; width: 100%;">
                 <canvas id="spendingBySectionChart"></canvas>
             </div>
         </div>
-        <div class="admin-panel chart-panel" style="grid-column: 1 / -1; md:grid-column: 7 / -1;">
-            <div class="admin-panel-header">
-                <h3 class="admin-panel-title"><i class="fa-solid fa-calendar-week"></i> Bookings by Day</h3>
+        
+        <div class="glass-card chart-wrapper hover-lift">
+            <div class="layout-header-modern pb-3 mb-4 border-bottom" style="border-color: var(--input-border) !important;">
+                <h3><div class="icon-badge bg-success"><i class="fa-solid fa-calendar-week"></i></div> Bookings by Day</h3>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" style="position: relative; height: 350px; width: 100%;">
                 <canvas id="bookingsByDayChart"></canvas>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Ultra Pro UI Layout Hooks */
+    .analytics-dashboard {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .charts-grid-layout {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 2rem;
+    }
+
+    .chart-wrapper {
+        padding: 30px !important;
+    }
+
+    .layout-header-modern h3 {
+        display: flex;
+        align-items: center;
+        font-size: 1.6rem;
+    }
+
+    .modern-btn-sm {
+        padding: 10px 20px;
+        border-radius: 10px;
+        background: var(--input-bg);
+        border: 1px solid var(--input-border);
+        color: var(--text);
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .modern-btn-sm:hover {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px var(--primary-light);
+    }
+    
+    @media (max-width: 992px) {
+        .charts-grid-layout { grid-template-columns: 1fr; }
+        .stat-cards-hero { grid-template-columns: 1fr; }
+        .stat-card-ultra { padding: 30px !important; }
+        .stat-value { font-size: 2.8rem; }
+    }
+</style>
 {% endblock %}
 
 {% block extra_js %}
@@ -59,10 +126,15 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Data from Django context
-    const sectionLabels = {{ section_chart_labels|safe }};
-    const sectionData = {{ section_chart_data|safe }};
-    const dailyLabels = {{ daily_chart_labels|safe }};
-    const dailyData = {{ daily_chart_data|safe }};
+    const sectionLabels = JSON.parse('{{ section_chart_labels|safe|escapejs }}');
+    const sectionData = JSON.parse('{{ section_chart_data|safe|escapejs }}');
+    const dailyLabels = JSON.parse('{{ daily_chart_labels|safe|escapejs }}');
+    const dailyData = JSON.parse('{{ daily_chart_data|safe|escapejs }}');
+
+    // Chart Options Theme
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    const gridColor = 'rgba(255,255,255,0.05)';
 
     // --- Chart 1: Spending by Section (Doughnut Chart) ---
     const spendingCtx = document.getElementById('spendingBySectionChart');
@@ -74,43 +146,99 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     label: 'Spending',
                     data: sectionData,
-                    backgroundColor: ['#00ff99', '#00e0b3', '#00c4a7', '#00a89a', '#008c8e'],
-                    borderColor: 'var(--card-bg-solid)',
+                    backgroundColor: [
+                        'rgba(6, 182, 212, 0.8)',   /* Cyan */
+                        'rgba(16, 185, 129, 0.8)',  /* Success */
+                        'rgba(139, 92, 246, 0.8)',  /* Primary */
+                        'rgba(245, 158, 11, 0.8)',  /* Warning */
+                        'rgba(236, 72, 153, 0.8)'   /* Pink */
+                    ],
+                    borderColor: '#0f1219',
                     borderWidth: 4,
-                    hoverOffset: 10
+                    hoverOffset: 15,
+                    borderRadius: 5
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom', labels: { color: 'var(--text-light)' } } }
+                cutout: '70%',
+                plugins: { 
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { padding: 20, usePointStyle: true, pointStyle: 'circle' } 
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 14 },
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed !== null) label += '₹' + context.parsed.toLocaleString('en-IN');
+                                return label;
+                            }
+                        }
+                    }
+                }
             }
         });
     }
 
     // --- Chart 2: Bookings by Day (Bar Chart) ---
     const dailyCtx = document.getElementById('bookingsByDayChart');
+    const gradientBar = dailyCtx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+    gradientBar.addColorStop(0, 'rgba(16, 185, 129, 0.8)'); // Success Top
+    gradientBar.addColorStop(1, 'rgba(16, 185, 129, 0.1)'); // Transparent Bottom
+
     if (dailyCtx) {
         new Chart(dailyCtx, {
             type: 'bar',
             data: {
                 labels: dailyLabels,
                 datasets: [{
-                    label: 'Number of Bookings',
+                    label: 'Bookings',
                     data: dailyData,
-                    backgroundColor: 'rgba(0, 255, 153, 0.6)',
-                    borderColor: 'rgba(0, 255, 153, 1)',
-                    borderWidth: 1,
-                    borderRadius: 6
+                    backgroundColor: gradientBar,
+                    borderColor: '#10b981',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    barThickness: 'flex',
+                    maxBarThickness: 40
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 16, weight: 'bold' },
+                        displayColors: false
+                    }
+                },
                 scales: {
-                    y: { beginAtZero: true, ticks: { color: 'var(--text-light)', stepSize: 1 }, grid: { color: 'var(--border)' } },
-                    x: { ticks: { color: 'var(--text-light)' }, grid: { color: 'transparent' } }
+                    y: { 
+                        beginAtZero: true, 
+                        ticks: { stepSize: 1, padding: 10 }, 
+                        grid: { color: gridColor, drawBorder: false },
+                        border: { display: false }
+                    },
+                    x: { 
+                        ticks: { padding: 10 }, 
+                        grid: { display: false },
+                        border: { display: false }
+                    }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
                 }
             }
         });

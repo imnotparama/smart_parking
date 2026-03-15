@@ -5,70 +5,88 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="page-container" id="adminDashboard">
+<div class="page-container admin-dashboard">
 
     <!-- Page Header -->
-    <div class="page-header">
-        <h1 class="page-title"><i class="fa-solid fa-shield-halved"></i> Admin Dashboard</h1>
-        <a href="{% url 'parking:home' %}" class="btn btn-secondary">
-            <i class="fa-solid fa-arrow-left"></i> Back to Home
-        </a>
+    <div class="page-header dashboard-header">
+        <div class="header-text">
+            <h2 class="page-title gradient-text"><i class="fa-solid fa-shield-halved"></i> Admin Dashboard</h2>
+            <p class="text-light">Overview and management of the Smart Parking system.</p>
+        </div>
+        <div>
+            <a href="{% url 'parking:home' %}" class="btn modern-btn-sm"><i class="fa-solid fa-arrow-left me-2"></i> Back to Home</a>
+        </div>
     </div>
 
-    <!-- Stat Cards Grid -->
-    <div class="stat-cards-grid">
-        <div class="stat-card-pro glass-card">
-            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
-            <div class="stat-info">
-                <h4>Total Users</h4>
-                <p>{{ total_users }}</p>
+    <!-- Ultra Stat Cards Grid -->
+    <div class="stat-cards-hero mb-5">
+        <div class="stat-card-ultra glass-card hover-lift">
+            <div class="stat-icon-glow" style="--glow-color: var(--primary); --glow-dark: #064e3b;">
+                <i class="fa-solid fa-users"></i>
             </div>
+            <div class="stat-content">
+                <span class="stat-label">Total Users</span>
+                <span class="stat-value text-primary-gradient">{{ total_users }}</span>
+                <div class="stat-trend" style="color: var(--primary);"><i class="fa-solid fa-arrow-trend-up"></i> Registered</div>
+            </div>
+            <div class="stat-bg-decorator" style="background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);"></div>
         </div>
-        <div class="stat-card-pro glass-card">
-            <div class="stat-icon"><i class="fa-solid fa-car"></i></div>
-            <div class="stat-info">
-                <h4>Total Slots</h4>
-                <p>{{ total_slots }}</p>
+        <div class="stat-card-ultra glass-card hover-lift">
+            <div class="stat-icon-glow" style="--glow-color: #0ea5e9; --glow-dark: #0891b2;">
+                <i class="fa-solid fa-car"></i>
             </div>
+            <div class="stat-content">
+                <span class="stat-label">Total Slots</span>
+                <span class="stat-value text-info-gradient">{{ total_slots }}</span>
+                <div class="stat-trend text-info"><i class="fa-solid fa-parking"></i> Capacity</div>
+            </div>
+            <div class="stat-bg-decorator" style="background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);"></div>
         </div>
-        <div class="stat-card-pro glass-card">
-            <div class="stat-icon"><i class="fa-solid fa-book-bookmark"></i></div>
-            <div class="stat-info">
-                <h4>Active Bookings</h4>
-                <p>{{ active_bookings_count }}</p>
+        <div class="stat-card-ultra glass-card hover-lift">
+            <div class="stat-icon-glow" style="--glow-color: #f59e0b; --glow-dark: #b45309;">
+                <i class="fa-solid fa-book-bookmark"></i>
             </div>
+            <div class="stat-content">
+                <span class="stat-label">Active Bookings</span>
+                <span class="stat-value text-warning-gradient">{{ active_bookings_count }}</span>
+                <div class="stat-trend text-warning"><i class="fa-solid fa-clock"></i> Current</div>
+            </div>
+            <div class="stat-bg-decorator" style="background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);"></div>
         </div>
-        <div class="stat-card-pro glass-card">
-            <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
-            <div class="stat-info">
-                <h4>Total Revenue</h4>
-                {# THIS IS THE FIX: Using the correct total_revenue variable from the view #}
-                <p>₹{{ total_revenue|floatformat:2|intcomma }}</p>
+        <div class="stat-card-ultra glass-card hover-lift">
+            <div class="stat-icon-glow" style="--glow-color: #10b981; --glow-dark: #064e3b;">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
             </div>
+            <div class="stat-content">
+                <span class="stat-label">Total Revenue</span>
+                <span class="stat-value text-success-gradient">₹{{ total_revenue|floatformat:2|intcomma }}</span>
+                <div class="stat-trend text-success"><i class="fa-solid fa-vault"></i> Earnings</div>
+            </div>
+            <div class="stat-bg-decorator" style="background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);"></div>
         </div>
     </div>
 
     <!-- Charts Grid -->
-    <div class="admin-grid-layout mt-3">
-        <div class="admin-panel chart-panel" style="grid-column: 1 / -1;">
-            <div class="admin-panel-header">
-                <h3 class="admin-panel-title"><i class="fa-solid fa-arrow-trend-up"></i> Revenue (Last 7 Days)</h3>
+    <div class="charts-grid-layout mb-5">
+        <div class="glass-card chart-wrapper" style="grid-column: 1 / -1;">
+            <div class="layout-header-modern pb-3 mb-4 border-bottom" style="border-color: var(--input-border) !important;">
+                <h3 class="m-0"><i class="fa-solid fa-arrow-trend-up text-primary me-2"></i> Revenue (Last 7 Days)</h3>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" style="position: relative; height: 350px; width: 100%;">
                 <canvas id="adminRevenueChart"></canvas>
             </div>
         </div>
     </div>
 
     <!-- Data Tables Grid -->
-    <div class="admin-grid-layout mt-3">
+    <div class="tables-grid-layout">
         <!-- Recent Bookings Panel -->
-        <div class="admin-panel recent-bookings-panel" style="grid-column: 1 / -1;">
-            <div class="admin-panel-header">
-                <h3 class="admin-panel-title"><i class="fa-solid fa-clock-rotate-left"></i> Recent Bookings</h3>
+        <div class="glass-card table-wrapper" style="grid-column: 1 / -1;">
+            <div class="layout-header-modern pb-3 mb-4 flex-row justify-content-between align-items-center border-bottom" style="border-color: var(--input-border) !important;">
+                <h3 class="m-0"><i class="fa-solid fa-clock-rotate-left text-warning me-2"></i> Recent Bookings</h3>
             </div>
-            <div class="admin-table-wrapper">
-                <table class="admin-table">
+            <div class="table-responsive">
+                <table class="modern-table">
                     <thead>
                         <tr>
                             <th>User</th>
@@ -80,18 +98,28 @@
                     </thead>
                     <tbody>
                         {% for booking in recent_bookings %}
-                        <tr>
-                            <td data-label="User">{{ booking.user.username }}</td>
-                            <td data-label="Slot">{{ booking.slot }}</td>
-                            <td data-label="Booked At">{{ booking.booked_at|naturaltime }}</td>
-                            <td data-label="Cost">₹{{ booking.total_cost|floatformat:2 }}</td>
-                            <td data-label="Status">
-                                <span class="status-badge status-{{ booking.status|lower }}">{{ booking.get_status_display }}</span>
+                        <tr class="hover-row">
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar-sm bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <span class="fw-bold">{{ booking.user.username }}</span>
+                                </div>
+                            </td>
+                            <td><span class="modern-badge bg-secondary bg-opacity-25 border border-secondary border-opacity-25">{{ booking.slot }}</span></td>
+                            <td class="text-light">{{ booking.booked_at|naturaltime }}</td>
+                            <td class="fw-bold text-success">₹{{ booking.total_cost|floatformat:2 }}</td>
+                            <td>
+                                <span class="modern-badge status-{{ booking.status|lower }}">{{ booking.get_status_display }}</span>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center text-light p-4">No recent bookings found.</td>
+                            <td colspan="5" class="text-center text-muted p-5">
+                                <i class="fa-solid fa-inbox mb-3 d-block" style="font-size: 2rem;"></i>
+                                No recent bookings found.
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -100,31 +128,42 @@
         </div>
 
         <!-- New Users Panel -->
-        <div class="admin-panel new-users-panel" style="grid-column: 1 / -1;">
-            <div class="admin-panel-header">
-                <h3 class="admin-panel-title"><i class="fa-solid fa-user-plus"></i> New Users</h3>
+        <div class="glass-card table-wrapper mt-5" style="grid-column: 1 / -1;">
+            <div class="layout-header-modern pb-3 mb-4 flex-row justify-content-between align-items-center border-bottom" style="border-color: var(--input-border) !important;">
+                <h3 class="m-0"><i class="fa-solid fa-user-plus text-info me-2"></i> New Users</h3>
             </div>
-            <div class="admin-table-wrapper">
-                <table class="admin-table">
+            <div class="table-responsive">
+                <table class="modern-table">
                     <thead>
                         <tr>
-                            <th>Username</th>
+                            <th>User</th>
                             <th>Email</th>
                             <th>Joined On</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for user in recent_users %}
-                        <tr>
-                            <td data-label="Username">
-                                <div class="user-cell"><span>{{ user.username }}</span></div>
+                        <tr class="hover-row">
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="avatar-sm bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        {{ user.username|make_list|first|upper }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ user.username }}</div>
+                                        <div class="text-muted small">ID: #{{ user.id }}</div>
+                                    </div>
+                                </div>
                             </td>
-                            <td data-label="Email">{{ user.email }}</td>
-                            <td data-label="Joined On">{{ user.date_joined|naturaltime }}</td>
+                            <td class="text-light"><a href="mailto:{{ user.email }}" class="text-cyan text-decoration-none">{{ user.email }}</a></td>
+                            <td><span class="modern-badge bg-secondary bg-opacity-25">{{ user.date_joined|naturaltime }}</span></td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="3" class="text-center text-light p-4">No new users joined recently.</td>
+                            <td colspan="3" class="text-center text-muted p-5">
+                                <i class="fa-solid fa-users-slash mb-3 d-block" style="font-size: 2rem;"></i>
+                                No new users joined recently.
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -133,6 +172,88 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Admin Dashboard Specific UI */
+    .admin-dashboard {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .modern-btn-sm {
+        padding: 10px 20px;
+        border-radius: 10px;
+        background: var(--input-bg);
+        border: 1px solid var(--input-border);
+        color: var(--text);
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .modern-btn-sm:hover {
+        background: var(--input-focus-bg);
+        transform: translateY(-2px);
+        color: var(--text);
+    }
+    
+    .chart-wrapper, .table-wrapper {
+        padding: 2rem;
+        background: var(--glass-bg);
+    }
+
+    /* Modern Table Styles */
+    .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        color: var(--text);
+    }
+
+    .modern-table th {
+        text-align: left;
+        padding: 1rem 1.5rem;
+        color: var(--text-light);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        border-bottom: 1px solid var(--input-border);
+    }
+
+    .modern-table td {
+        padding: 1.25rem 1.5rem;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--input-border);
+    }
+
+    .hover-row {
+        transition: background-color 0.2s;
+    }
+    .hover-row:hover {
+        background-color: var(--input-bg);
+    }
+
+    .modern-badge {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        display: inline-block;
+    }
+    
+    .status-completed { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-active { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .status-cancelled { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .status-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    .text-cyan { color: #06b6d4; }
+    
+</style>
 {% endblock %}
 
 {% block extra_js %}
@@ -140,31 +261,75 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Data from Django view
-    const revenueLabels = {{ chart_labels|safe }};
-    const revenueData = {{ chart_data|safe }};
+    const revenueLabels = JSON.parse('{{ chart_labels|safe|escapejs }}');
+    const revenueData = JSON.parse('{{ chart_data|safe|escapejs }}');
+
+    // Chart Configuration Theme
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    const gridColor = 'rgba(255,255,255,0.05)';
 
     const revenueCtx = document.getElementById('adminRevenueChart');
     if (revenueCtx) {
+        
+        // Gradient Fill
+        const gradientLine = revenueCtx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+        gradientLine.addColorStop(0, 'rgba(139, 92, 246, 0.5)'); // Primary Top
+        gradientLine.addColorStop(1, 'rgba(139, 92, 246, 0.0)'); // Transparent Bottom
+
         new Chart(revenueCtx, {
             type: 'line',
             data: {
                 labels: revenueLabels,
                 datasets: [{
-                    label: 'Daily Revenue (₹)',
+                    label: 'Revenue',
                     data: revenueData,
-                    borderColor: 'var(--primary)',
-                    backgroundColor: 'var(--primary-light)',
+                    borderColor: '#8b5cf6', // Primary Color
+                    backgroundColor: gradientLine,
                     fill: true,
+                    borderWidth: 3,
                     tension: 0.4,
+                    pointBackgroundColor: '#8b5cf6',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 16, weight: 'bold' },
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return '₹' + context.parsed.y.toLocaleString('en-IN');
+                            }
+                        }
+                    }
+                },
                 scales: {
-                    y: { beginAtZero: true, ticks: { color: 'var(--text-light)' }, grid: { color: 'var(--border)' } },
-                    x: { ticks: { color: 'var(--text-light)' }, grid: { color: 'transparent' } }
+                    y: { 
+                        beginAtZero: true, 
+                        ticks: { stepSize: 500, padding: 10 }, 
+                        grid: { color: gridColor, drawBorder: false },
+                        border: { display: false }
+                    },
+                    x: { 
+                        ticks: { padding: 10 }, 
+                        grid: { display: false },
+                        border: { display: false }
+                    }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
                 }
             }
         });

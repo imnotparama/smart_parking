@@ -6,52 +6,71 @@
 
 {% block content %}
 <div class="page-container my-bookings-page">
-    <div class="page-header">
-        <h2 class="page-title"><i class="fa-solid fa-ticket"></i> My Bookings</h2>
+    <div class="page-header dashboard-header">
+        <div class="header-text">
+            <h2 class="page-title gradient-text"><i class="fa-solid fa-ticket"></i> My Bookings</h2>
+            <p class="text-light">Manage your current and past parking reservations.</p>
+        </div>
+        <div>
+            <a href="{% url 'parking:home' %}" class="btn btn-primary modern-btn-sm"><i class="fa-solid fa-plus me-2"></i> New Booking</a>
+        </div>
     </div>
 
     <!-- =================================== -->
     <!-- ==      Active Booking Section   == -->
     <!-- =================================== -->
-    <div class="active-booking-container">
-        <h3><i class="fa-solid fa-clock text-primary"></i> Active Booking</h3>
+    <div class="active-booking-container mb-5">
+        <h3 class="section-badge mb-4"><i class="fa-solid fa-clock text-primary me-2"></i> Active Bookings</h3>
+        
         {% if active_bookings %}
-            {% for booking in active_bookings %}
-            <div class="active-booking-card glass-card" id="activeBookingCard" data-end-time="{{ booking.end_time|date:'c' }}">
-                <div class="info-item">
-                    <label><i class="fa-solid fa-car-tunnel"></i> Parking Slot</label>
-                    <span class="value">{{ booking.slot }}</span>
+            <div class="active-bookings-grid">
+                {% for booking in active_bookings %}
+                <div class="active-booking-card glass-card hover-lift" id="activeBookingCard" data-end-time="{{ booking.end_time|date:'c' }}">
+                    <div class="booking-header">
+                        <div class="slot-badge">
+                            <i class="fa-solid fa-car-tunnel"></i>
+                            <span>{{ booking.slot }}</span>
+                        </div>
+                        <div class="status-pulse">Live</div>
+                    </div>
+                    
+                    <div class="booking-body">
+                        <div class="info-group">
+                            <label><i class="fa-solid fa-hashtag text-muted"></i> Vehicle</label>
+                            <span class="value">{{ booking.vehicle_number }}</span>
+                        </div>
+                        <div class="info-group">
+                            <label><i class="fa-regular fa-calendar text-muted"></i> Date</label>
+                            <span class="value">{{ booking.parking_date|date:"D, M d, Y" }}</span>
+                        </div>
+                        <div class="info-group time-remaining-group">
+                            <label><i class="fa-solid fa-hourglass-half text-warning"></i> Time Remaining</label>
+                            <div class="countdown-timer" id="countdownTimer">--:--:--</div>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-actions">
+                        <a href="{% url 'parking:booking_receipt' booking.id %}" class="btn action-btn btn-view-receipt">
+                            <i class="fa-solid fa-receipt me-2"></i> Receipt
+                        </a>
+                        <form action="{% url 'parking:cancel_booking' booking.id %}" method="post" class="d-inline w-100"
+                              onsubmit="return confirm('Are you sure you want to cancel your booking for slot {{ booking.slot }}?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn action-btn btn-cancel">
+                                <i class="fa-solid fa-ban me-2"></i> Cancel
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <label><i class="fa-solid fa-hashtag"></i> Vehicle Number</label>
-                    <span class="value">{{ booking.vehicle_number }}</span>
-                </div>
-                <div class="info-item">
-                    <label><i class="fa-solid fa-hourglass-half"></i> Time Remaining</label>
-                    <div class="countdown-timer" id="countdownTimer">--:--:--</div>
-                </div>
-                <div class="actions">
-                    <!-- Cancel Booking Form -->
-                    <form action="{% url 'parking:cancel_booking' booking.id %}" method="post"
-                          onsubmit="return confirm('Are you sure you want to cancel your booking for slot {{ booking.slot }}?');">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fa-solid fa-ban"></i> Cancel Booking
-                        </button>
-                    </form>
-                    <!-- View Receipt Button -->
-                    <a href="{% url 'parking:booking_receipt' booking.id %}" class="btn btn-secondary">
-                        <i class="fa-solid fa-receipt"></i> View Receipt
-                    </a>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         {% else %}
-            <div class="no-active-booking-card glass-card">
-                <h4>You have no active bookings.</h4>
-                <p>Find and book a parking spot now to get started.</p>
-                <a href="{% url 'parking:home' %}" class="btn btn-primary">
-                    <i class="fa-solid fa-magnifying-glass"></i> Find a Slot
+            <div class="empty-state glass-card text-center p-5">
+                <div class="empty-icon-bg"><i class="fa-solid fa-car"></i></div>
+                <h4>No Active Bookings</h4>
+                <p class="text-light mb-4">You don't have any parking slots reserved right now.</p>
+                <a href="{% url 'parking:home' %}" class="btn btn-primary px-4 py-2" style="border-radius: 20px;">
+                    <i class="fa-solid fa-magnifying-glass me-2"></i> Find a Slot
                 </a>
             </div>
         {% endif %}
@@ -60,39 +79,333 @@
     <!-- =================================== -->
     <!-- ==    Booking History Section    == -->
     <!-- =================================== -->
-    <div class="past-bookings-container" style="margin-top: 40px;">
-        <h3><i class="fa-solid fa-clock-rotate-left text-light"></i> Booking History</h3>
-        <div class="past-bookings-list">
+    <div class="past-bookings-container mt-5">
+        <h3 class="section-badge mb-4"><i class="fa-solid fa-clock-rotate-left text-secondary me-2"></i> Booking History</h3>
+        
+        <div class="past-bookings-layout">
             {% for booking in past_bookings %}
-            <div class="booking-history-card glass-card">
-                <div class="info">
-                    <strong>Slot {{ booking.slot }}</strong>
-                    <span>{{ booking.vehicle_number }}</span>
+            <div class="history-card glass-card hover-lift">
+                <div class="history-card-left">
+                    <div class="history-slot">
+                        <span class="slot-id">{{ booking.slot }}</span>
+                    </div>
+                    <div class="history-details">
+                        <h5 class="vh-number">{{ booking.vehicle_number }}</h5>
+                        <p class="date-time">
+                            <i class="fa-regular fa-calendar-days me-1"></i> {{ booking.parking_date|date:"M d, Y" }} &bull; 
+                            <i class="fa-regular fa-clock me-1"></i> {{ booking.start_time|time:"g:i A" }} ({{ booking.duration_hours|floatformat:1 }}h)
+                        </p>
+                    </div>
                 </div>
-                <div class="info">
-                    <strong>{{ booking.parking_date|date:"D, d M Y" }}</strong>
-                    <span>{{ booking.start_time|time:"g:i A" }} for {{ booking.duration_hours|floatformat:1 }}hr</span>
-                </div>
-                <div class="info">
-                    <strong>Total Cost</strong>
-                    {# THIS IS THE FIX: Using the correct total_cost field #}
-                    <span>₹{{ booking.total_cost|floatformat:2 }}</span>
-                </div>
-                <div class="status">
-                    <span class="status-badge status-{{ booking.status|lower }}">{{ booking.get_status_display }}</span>
-                </div>
-                <div class="actions">
-                     <a href="{% url 'parking:booking_receipt' booking.id %}" class="btn btn-secondary btn-sm">
-                        <i class="fa-solid fa-receipt"></i> Receipt
-                    </a>
+                
+                <div class="history-card-right">
+                    <div class="history-cost">
+                        <span class="cost-label">Total Cost</span>
+                        <span class="cost-value">₹{{ booking.total_cost|floatformat:2 }}</span>
+                    </div>
+                    <div class="history-status">
+                        <span class="status-badge modern-badge status-{{ booking.status|lower }}">
+                            {% if booking.status == 'COMPLETED' %}<i class="fa-solid fa-check me-1"></i>{% endif %}
+                            {% if booking.status == 'CANCELLED' %}<i class="fa-solid fa-xmark me-1"></i>{% endif %}
+                            {{ booking.get_status_display }}
+                        </span>
+                    </div>
+                    <div class="history-action">
+                        <a href="{% url 'parking:booking_receipt' booking.id %}" class="btn custom-icon-btn" title="View Receipt">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
             {% empty %}
-            <div class="no-active-booking-card glass-card" style="margin-bottom: 0; padding: 2rem;">
-                <p>You have no past bookings.</p>
+            <div class="empty-state glass-card text-center p-4">
+                <i class="fa-solid fa-clock-rotate-left mb-3" style="font-size: 2rem; color: var(--text-muted);"></i>
+                <p class="m-0 text-light">You have no past bookings.</p>
             </div>
             {% endfor %}
         </div>
     </div>
 </div>
+
+<style>
+    /* My Bookings Premium Styles */
+    .my-bookings-page {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-badge {
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text);
+        display: inline-flex;
+        align-items: center;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--input-border);
+    }
+
+    .modern-btn-sm {
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Active Bookings Grid */
+    .active-bookings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .active-booking-card {
+        padding: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .booking-header {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2));
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--input-border);
+    }
+
+    .slot-badge {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .status-pulse {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .booking-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+    .info-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px dashed var(--input-border);
+    }
+    .info-group:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .info-group label {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .info-group .value {
+        font-weight: 600;
+        color: var(--text);
+        font-size: 1.05rem;
+    }
+
+    .time-remaining-group {
+        background: var(--input-bg);
+        padding: 1rem;
+        border-radius: 12px;
+        margin-top: 0.5rem;
+        border: 1px solid var(--input-border);
+    }
+
+    .countdown-timer {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--warning);
+        letter-spacing: 2px;
+    }
+
+    .booking-actions {
+        display: flex;
+        border-top: 1px solid var(--input-border);
+    }
+
+    .action-btn {
+        flex: 1;
+        border-radius: 0;
+        padding: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+        border: none;
+    }
+    .btn-view-receipt {
+        background: var(--input-bg);
+        color: var(--text);
+        border-right: 1px solid var(--input-border);
+    }
+    .btn-view-receipt:hover {
+        background: var(--input-focus-bg);
+        color: var(--text);
+    }
+    .btn-cancel {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+    }
+    .btn-cancel:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    /* History Layout */
+    .past-bookings-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .history-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.2rem 1.5rem;
+        border-radius: 16px;
+    }
+
+    .history-card-left {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .history-slot {
+        width: 60px;
+        height: 60px;
+        background: var(--input-bg);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--input-border);
+    }
+    .slot-id {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .history-details p { margin: 0; }
+    .vh-number {
+        margin: 0 0 5px 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+    .date-time {
+        font-size: 0.85rem;
+        color: var(--text-light);
+    }
+
+    .history-card-right {
+        display: flex;
+        align-items: center;
+        gap: 2.5rem;
+    }
+
+    .history-cost {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    .cost-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+    .cost-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .modern-badge {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    .status-completed { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-cancelled { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .custom-icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--input-bg);
+        color: var(--text-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--input-border);
+        transition: all 0.3s;
+    }
+    .custom-icon-btn:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        transform: translateX(3px);
+    }
+
+    /* Empty States */
+    .empty-icon-bg {
+        width: 80px;
+        height: 80px;
+        background: var(--input-bg);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: var(--text-muted);
+        margin: 0 auto 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .history-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+        .history-card-right {
+            width: 100%;
+            justify-content: space-between;
+        }
+    }
+</style>
 {% endblock %}

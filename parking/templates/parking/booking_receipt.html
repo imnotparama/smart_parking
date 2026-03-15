@@ -5,67 +5,409 @@
 
 {% block content %}
 <div class="page-container receipt-page">
-    <div class="page-header">
-        <h2 class="page-title"><i class="fa-solid fa-receipt"></i> Booking Receipt</h2>
-        <a href="{% url 'parking:my_bookings' %}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back to My Bookings</a>
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <a href="{% url 'parking:my_bookings' %}" class="btn modern-btn-sm"><i class="fa-solid fa-arrow-left me-2"></i> Back to My Bookings</a>
+        <button onclick="window.print()" class="btn btn-primary modern-btn-sm" id="printBtn"><i class="fa-solid fa-print me-2"></i> Print Receipt</button>
     </div>
 
-    <div class="receipt-card glass-card">
-        <div class="receipt-header">
-            <div>
-                <h3>Receipt for Booking #{{ booking.booking_id }}</h3>
-                <p class="text-light">Issued on: {{ booking.booked_at|date:"d M Y, P" }}</p>
+    <div class="receipt-wrapper">
+        <div class="receipt-card glass-card">
+            <!-- Receipt Header -->
+            <div class="receipt-header-modern">
+                <div class="brand-info">
+                    <div class="brand-logo">
+                        <i class="fa-solid fa-square-parking"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h2>Smart Parking</h2>
+                        <p>Premium Spot Reservation</p>
+                    </div>
+                </div>
+                <div class="receipt-meta">
+                    <div class="meta-badge">RECEIPT</div>
+                    <p class="receipt-number">#{{ booking.booking_id }}</p>
+                    <p class="receipt-date">{{ booking.booked_at|date:"M d, Y &bull; g:i A" }}</p>
+                </div>
             </div>
-            <div class="receipt-logo">
-                <i class="fa-solid fa-parking fa-2x"></i>
-                <span>Smart Parking</span>
+
+            <!-- Receipt Body -->
+            <div class="receipt-body-modern">
+                
+                <div class="status-banner status-{{ booking.status|lower }}">
+                    <i class="fa-solid fa-circle-check me-2"></i>
+                    <span>Booking {{ booking.get_status_display }}</span>
+                </div>
+
+                <div class="details-grid">
+                    <div class="detail-section">
+                        <h4 class="section-title"><i class="fa-solid fa-circle-info text-cyan me-2"></i>Reservation Details</h4>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Parking Slot</span>
+                            <span class="info-value highlight-value">{{ booking.slot }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Vehicle Number</span>
+                            <span class="info-value">{{ booking.vehicle_number }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Date</span>
+                            <span class="info-value">{{ booking.parking_date|date:"l, F d, Y" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Time</span>
+                            <span class="info-value">{{ booking.start_time|time:"g:i A" }} - {{ booking.end_time|time:"g:i A" }}</span>
+                        </div>
+                        <div class="info-row mb-0">
+                            <span class="info-label">Duration</span>
+                            <span class="info-value">{{ booking.duration_hours|floatformat:"1" }} Hour(s)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="receipt-divider">
+                    <div class="cutout left"></div>
+                    <div class="dashed-line"></div>
+                    <div class="cutout right"></div>
+                </div>
+
+                <div class="payment-section">
+                    <h4 class="section-title"><i class="fa-solid fa-credit-card text-success me-2"></i>Payment Summary</h4>
+                    
+                    <div class="payment-row">
+                        <span class="payment-label">Rate per hour</span>
+                        <span class="payment-value">₹{{ booking.slot.price|floatformat:2|intcomma }}</span>
+                    </div>
+                    
+                    <div class="payment-row total-row mt-3 pt-3">
+                        <span class="payment-label fw-bold" style="color: var(--text);">Total Amount Paid</span>
+                        <span class="payment-value total-amount text-success">₹{{ booking.total_cost|floatformat:2|intcomma }}</span>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="receipt-body">
-            <h4>Booking Details</h4>
-            <table class="receipt-table">
-                <tr>
-                    <th>Parking Slot:</th>
-                    <td>{{ booking.slot }}</td>
-                </tr>
-                <tr>
-                    <th>Vehicle Number:</th>
-                    <td>{{ booking.vehicle_number }}</td>
-                </tr>
-                <tr>
-                    <th>Date:</th>
-                    <td>{{ booking.parking_date|date:"D, d M Y" }}</td>
-                </tr>
-                <tr>
-                    <th>Time:</th>
-                    <td>{{ booking.start_time|time:"g:i A" }} to {{ booking.end_time|time:"g:i A" }}</td>
-                </tr>
-                <tr>
-                    <th>Duration:</th>
-                    <td>{{ booking.duration_hours|floatformat:"1" }} Hour(s)</td>
-                </tr>
-            </table>
-
-            <hr class="receipt-divider">
-
-            <h4>Payment Summary</h4>
-            <table class="receipt-table">
-                <tr>
-                    <th>Base Price:</th>
-                    <td>₹{{ booking.slot.price|floatformat:2|intcomma }} / hour</td>
-                </tr>
-                <tr class="total-row">
-                    <th>Total Amount Paid:</th>
-                    <td>₹{{ booking.total_cost|floatformat:2|intcomma }}</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="receipt-footer">
-            <p>Thank you for choosing Smart Parking. A copy of this receipt has been sent to your email.</p>
-            <button onclick="window.print()" class="btn btn-primary"><i class="fa-solid fa-print"></i> Print Receipt</button>
+            <!-- Receipt Footer -->
+            <div class="receipt-footer-modern">
+                <div class="qr-placeholder">
+                    <i class="fa-solid fa-qrcode"></i>
+                </div>
+                <div class="footer-msg">
+                    <p class="greeting">Thank you for choosing Smart Parking!</p>
+                    <p class="sub-msg">A confirmation email has been sent to your registered address.</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Modern Receipt Styles */
+    .receipt-page {
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .modern-btn-sm {
+        padding: 10px 20px;
+        border-radius: 10px;
+        background: var(--input-bg);
+        border: 1px solid var(--input-border);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+    .modern-btn-sm:hover {
+        background: var(--input-focus-bg);
+        color: var(--text);
+        transform: translateY(-2px);
+    }
+    .modern-btn-sm.btn-primary {
+        background: linear-gradient(135deg, var(--primary), #6d28d9);
+        border: none;
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    }
+
+    .receipt-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    .receipt-card {
+        width: 100%;
+        max-width: 650px;
+        border-radius: 20px;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    /* Header */
+    .receipt-header-modern {
+        background: var(--input-bg);
+        padding: 2.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 1px solid var(--input-border);
+    }
+
+    .brand-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.2rem;
+    }
+
+    .brand-logo {
+        font-size: 2.5rem;
+        color: var(--primary);
+        background: rgba(139, 92, 246, 0.1);
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+    }
+
+    .brand-text h2 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0 0 0.2rem 0;
+        color: var(--text);
+    }
+
+    .brand-text p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .receipt-meta {
+        text-align: right;
+    }
+
+    .meta-badge {
+        display: inline-block;
+        background: var(--input-bg);
+        border: 1px solid var(--input-border);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: var(--text);
+        margin-bottom: 0.8rem;
+    }
+
+    .receipt-number {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0 0 0.2rem 0;
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    .receipt-date {
+        margin: 0;
+        color: var(--text-light);
+        font-size: 0.85rem;
+    }
+
+    /* Body */
+    .receipt-body-modern {
+        padding: 2rem;
+    }
+
+    .status-banner {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        color: #34d399;
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .status-cancelled {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.2);
+        color: #f87171;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .text-cyan { color: #06b6d4; }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px dashed var(--input-border);
+    }
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: var(--text-light);
+        font-size: 0.95rem;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: var(--text);
+        text-align: right;
+    }
+
+    .highlight-value {
+        background: var(--input-bg);
+        border: 1px solid var(--input-border);
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-family: 'Courier New', Courier, monospace;
+        letter-spacing: 1px;
+    }
+
+    /* Ticket Divider Effect */
+    .receipt-divider {
+        position: relative;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        margin: 1rem 0;
+    }
+
+    .dashed-line {
+        flex: 1;
+        height: 0;
+        border-top: 2px dashed var(--input-border);
+    }
+
+    .cutout {
+        width: 30px;
+        height: 30px;
+        background-color: var(--bg); /* Matches body background */
+        border-radius: 50%;
+        position: absolute;
+        top: 5px;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .cutout.left { left: -35px; }
+    .cutout.right { right: -35px; }
+
+    /* Payment Section */
+    .payment-section {
+        background: var(--input-bg);
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 1px solid var(--input-border);
+    }
+
+    .payment-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .payment-label {
+        color: var(--text-light);
+    }
+
+    .payment-value {
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: 600;
+        color: var(--text);
+        font-size: 1.1rem;
+    }
+
+    .total-row {
+        border-top: 1px solid var(--input-border);
+    }
+
+    .total-amount {
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    /* Footer */
+    .receipt-footer-modern {
+        background: var(--input-bg);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border-top: 1px solid var(--input-border);
+    }
+
+    .qr-placeholder {
+        font-size: 4rem;
+        color: var(--input-border);
+        margin-bottom: 1rem;
+    }
+
+    .greeting {
+        font-weight: 700;
+        color: var(--text);
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+    }
+
+    .sub-msg {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* Print Styles */
+    @media print {
+        body * { visibility: hidden; }
+        .receipt-card, .receipt-card * { visibility: visible; }
+        .receipt-card {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            background: white !important;
+            color: black !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+        .text-white, .text-light, .text-muted, .text-cyan, .text-success { color: black !important; }
+        .glass-card { background: white !important; border: 1px solid #ddd !important; }
+        .cutout { background-color: white !important; box-shadow: none !important; border: 1px solid #ddd; }
+        .receipt-header-modern, .receipt-footer-modern, .payment-section { background: #f8f9fa !important; color: black !important;}
+        .dashed-line { border-color: #ccc !important; }
+        .highlight-value { background: #eee !important; color: black !important; }
+        .status-banner { border: 1px solid #ccc !important; color: black !important; }
+    }
+
+    @media (max-width: 576px) {
+        .receipt-header-modern {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+        }
+        .receipt-meta { text-align: center; }
+        .cutout { display: none; }
+    }
+</style>
 {% endblock %}

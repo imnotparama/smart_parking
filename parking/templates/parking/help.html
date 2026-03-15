@@ -1,125 +1,132 @@
 {% extends "parking/base.html" %}
 {% load static %}
 
-{% block title %}Support & About{% endblock %}
+{% block title %}Support & Guide{% endblock %}
 
 {% block content %}
-<div class="page-container" style="max-width: 1000px; margin: auto; padding: 2rem 1rem;">
+<div class="page-container help-dashboard">
     
     <!-- Header -->
-    <div class="help-header">
-        <h1 class="gradient-text"><i class="fa-solid fa-circle-info"></i> Support & Guide</h1>
-        <p class="text-light">Everything you need to know about using Smart Parking Analysis.</p>
+    <div class="page-header dashboard-header text-center d-flex flex-column align-items-center mb-5">
+        <h2 class="page-title gradient-text display-4 fw-bold"><i class="fa-solid fa-circle-info"></i> Support & Guide</h2>
+        <p class="text-light" style="max-width: 600px;">Everything you need to know about using Smart Parking Analysis. Follow our step-by-step guide to master the platform.</p>
     </div>
 
     <!-- Walkthrough Grid Section -->
-    <div class="guide-section">
-        <div class="section-title">
-            <h2><i class="fa-solid fa-map-location-dot"></i> How It Works</h2>
-            <div class="title-underline"></div>
+    <div class="guide-section mb-5">
+        <div class="section-badge text-center w-100 mb-4 justify-content-center border-0">
+            <h3><i class="fa-solid fa-map-location-dot text-primary me-2"></i> How It Works</h3>
         </div>
         
         <div class="walkthrough-grid">
             <!-- Step 1 -->
-            <div class="step-card glass-card">
+            <div class="step-card glass-card hover-lift">
                 <div class="step-icon-wrapper step-1">
                     <i class="fa-solid fa-magnifying-glass-location"></i>
                 </div>
                 <div class="step-content">
                     <div class="step-header">
-                        <span class="step-badge">Step 1</span>
-                        <h3>Find a Slot</h3>
+                        <span class="modern-badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 mb-2">Step 1</span>
+                        <h4>Find a Slot</h4>
                     </div>
-                    <p class="text-light">Head to the <strong>Home</strong> page. Available parking slots illuminate in glowing <strong class="color-success">Green</strong>. Use the search bar or filters to quickly locate the perfect spot.</p>
+                    <p class="text-light text-sm m-0 mt-2">Head to the <strong>Dashboard</strong>. Available spots glow in <strong class="text-success">Green</strong>. Use the intuitive layout to locate your ideal space instantly.</p>
                 </div>
             </div>
 
             <!-- Step 2 -->
-            <div class="step-card glass-card">
+            <div class="step-card glass-card hover-lift">
                 <div class="step-icon-wrapper step-2">
                     <i class="fa-solid fa-calendar-check"></i>
                 </div>
                 <div class="step-content">
                     <div class="step-header">
-                        <span class="step-badge">Step 2</span>
-                        <h3>Reserve Instantly</h3>
+                        <span class="modern-badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 mb-2">Step 2</span>
+                        <h4>Reserve Instantly</h4>
                     </div>
-                    <p class="text-light">Click a green slot. The Booking Panel opens instantly. Enter your vehicle info, choose your timeframe, pick a payment method, and hit <strong>Select a Slot</strong> to secure it.</p>
+                    <p class="text-light text-sm m-0 mt-2">Click any available slot to open the booking panel. Input your vehicle details, select your duration, and secure your spot with a single click.</p>
                 </div>
             </div>
 
             <!-- Step 3 -->
-            <div class="step-card glass-card">
+            <div class="step-card glass-card hover-lift">
                 <div class="step-icon-wrapper step-3">
                     <i class="fa-solid fa-car-on"></i>
                 </div>
                 <div class="step-content">
                     <div class="step-header">
-                        <span class="step-badge">Step 3</span>
-                        <h3>Manage Fleet</h3>
+                        <span class="modern-badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 mb-2">Step 3</span>
+                        <h4>Manage Your Fleet</h4>
                     </div>
-                    <p class="text-light">Visit <strong>My Bookings</strong> to view your active and historical sessions. Active slots light up in <strong class="color-primary">Blue</strong> on the layout, making locating your vehicle a breeze.</p>
+                    <p class="text-light text-sm m-0 mt-2">Access <strong>My Bookings</strong> to track active sessions or review history. Active spots illuminate in <strong class="text-warning">Yellow</strong> on the live grid.</p>
                 </div>
             </div>
 
             <!-- Step 4 -->
-            <div class="step-card glass-card">
+            <div class="step-card glass-card hover-lift">
                 <div class="step-icon-wrapper step-4">
                     <i class="fa-solid fa-chart-pie"></i>
                 </div>
                 <div class="step-content">
                     <div class="step-header">
-                        <span class="step-badge">Step 4</span>
-                        <h3>Track Insights</h3>
+                        <span class="modern-badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 mb-2">Step 4</span>
+                        <h4>Track Insights</h4>
                     </div>
-                    <p class="text-light">Unlock <strong>My Analytics</strong> for visualized data on your parking history, expenditures, and platform usage over time via beautiful, interactive charts.</p>
+                    <p class="text-light text-sm m-0 mt-2">Visit <strong>My Analytics</strong> to visualize your parking expenditure and engagement metrics through interactive, premium charts.</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="receipt-divider my-5" style="max-width: 800px; margin: 0 auto;">
+        <div class="cutout left"></div>
+        <div class="dashed-line"></div>
+        <div class="cutout right"></div>
+    </div>
+
     <!-- About Section -->
-    <div class="about-grid">
-        <div class="about-card glass-card">
-            <h4><i class="fa-solid fa-code"></i> Project Creator</h4>
-            <div class="creator-profile">
+    <div class="about-grid mt-5">
+        <div class="about-card glass-card premium-shadow">
+            <h4 class="mb-4"><i class="fa-solid fa-code text-primary me-2"></i> About the Creator</h4>
+            <div class="creator-profile mb-4">
                 <div class="creator-avatar">
                     <i class="fa-solid fa-user-astronaut"></i>
                 </div>
                 <div class="creator-info">
-                    <h3 class="creator-name">Parameshwaran S</h3>
-                    <p class="text-light">Data Scientist & Full-Stack Developer</p>
+                    <h5 class="creator-name mb-1">Parameshwaran S</h5>
+                    <p class="text-muted text-sm m-0">Data Scientist & Full-Stack Developer</p>
                 </div>
             </div>
-            <p class="text-light mt-3" style="font-size: 0.95rem;">
-                This application serves as a comprehensive full-stack solution highlighting modern web techniques via Django, Postgres, and advanced UI/UX concepts.
+            <p class="text-light text-sm mb-4">
+                This platform is engineered to demonstrate cutting-edge web development methodologies, fusing a robust Django backend with a highly-polished, premium glassmorphic frontend UI/UX.
             </p>
-            <div class="social-links mt-4">
-                <a href="https://www.linkedin.com/in/parameshwaran-s-datascientist" target="_blank" class="social-btn linkedin">
-                    <i class="fa-brands fa-linkedin-in"></i> LinkedIn
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/parameshwaran-s-datascientist" target="_blank" class="social-btn linkedin-btn">
+                    <i class="fa-brands fa-linkedin-in"></i> Connect on LinkedIn
                 </a>
-                <a href="https://github.com/imnotparama" target="_blank" class="social-btn github">
-                    <i class="fa-brands fa-github"></i> GitHub
+                <a href="https://github.com/imnotparama" target="_blank" class="social-btn github-btn">
+                    <i class="fa-brands fa-github"></i> View on GitHub
                 </a>
             </div>
         </div>
 
-        <div class="about-card glass-card contact-card">
-            <h4><i class="fa-solid fa-headset"></i> Need Assistance?</h4>
-            <p class="text-light mt-3">
-                Encountering an issue or have a feature request? Don't hesitate to reach out for direct support regarding your Smart Parking deployment.
+        <div class="about-card glass-card premium-shadow contact-card d-flex flex-column justify-content-center text-center p-5">
+            <i class="fa-solid fa-headset mb-3 text-cyan" style="font-size: 3rem;"></i>
+            <h4 class="mb-3">Need Technical Support?</h4>
+            <p class="text-light text-sm mb-4">
+                Encountering an issue with your reservation or the platform interface? Our support team is ready to assist you.
             </p>
-            <a href="mailto:hunterparama@gmail.com" class="email-btn mt-4">
-                <i class="fa-solid fa-envelope"></i> hunterparama@gmail.com
+            <a href="mailto:hunterparama@gmail.com" class="btn btn-primary modern-btn-sm rounded-pill py-3 px-4 w-100 mx-auto" style="max-width: 250px;">
+                <i class="fa-solid fa-envelope me-2"></i> Contact Support
             </a>
-            <div class="support-illustration mt-4">
+            
+            <div class="support-illustration">
                 <i class="fa-solid fa-life-ring"></i>
             </div>
         </div>
     </div>
     
-    <div class="text-center mt-5">
-        <a href="{% url 'parking:home' %}" class="btn btn-primary btn-lg rounded-pill px-5">
+    <div class="text-center mt-5 pt-3">
+        <a href="{% url 'parking:home' %}" class="btn modern-btn-sm px-4">
             <i class="fa-solid fa-arrow-left me-2"></i> Return to Dashboard
         </a>
     </div>
@@ -127,48 +134,66 @@
 </div>
 
 <style>
-    /* --- Page Base Typography & Spacing --- */
-    .help-header {
-        text-align: center;
-        margin-bottom: 4rem;
-        animation: fadeInDown 0.8s ease-out;
-    }
-    
-    .help-header h1 {
-        font-size: 3rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
+    /* Help Page Premium Styles */
+    .help-dashboard {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
-    .section-title {
-        margin-bottom: 2.5rem;
-        display: flex;
-        flex-direction: column;
+    .modern-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .modern-btn-sm {
+        padding: 10px 20px;
+        border-radius: 10px;
+        background: var(--input-bg);
+        border: 1px solid var(--input-border);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
         align-items: center;
+        justify-content: center;
+    }
+    .modern-btn-sm:hover {
+        background: var(--input-focus-bg);
+        color: var(--text);
+        transform: translateY(-2px);
+    }
+    .modern-btn-sm.btn-primary {
+        background: linear-gradient(135deg, var(--primary), #6d28d9);
+        border: none;
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
     }
 
-    .section-title h2 {
-        font-size: 2rem;
-        color: var(--white);
-        margin-bottom: 0.5rem;
+    .section-badge {
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--input-border);
     }
 
-    .title-underline {
-        height: 4px;
-        width: 60px;
-        background: linear-gradient(90deg, var(--primary), var(--secondary));
-        border-radius: 2px;
-    }
+    .text-sm { line-height: 1.6; }
 
-    .color-success { color: var(--success); }
-    .color-primary { color: var(--primary); }
-
-    /* --- Walkthrough Grid (Cards) --- */
+    /* --- Walkthrough Grid --- */
     .walkthrough-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        gap: 2rem;
-        margin-bottom: 5rem;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 1.5rem;
     }
 
     .step-card {
@@ -176,83 +201,72 @@
         align-items: flex-start;
         gap: 1.5rem;
         padding: 2rem;
-        border-radius: 20px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        background: linear-gradient(145deg, rgba(23, 25, 35, 0.7) 0%, rgba(13, 15, 20, 0.9) 100%);
-    }
-
-    .step-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-        border-color: rgba(255, 255, 255, 0.1);
+        background: var(--glass-bg);
     }
 
     .step-icon-wrapper {
         flex-shrink: 0;
-        width: 70px;
-        height: 70px;
-        border-radius: 16px;
+        width: 65px;
+        height: 65px;
+        border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2rem;
+        font-size: 1.8rem;
         color: white;
         box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
 
-    /* Unique Gradients for each step */
     .step-1 { background: linear-gradient(135deg, #10b981, #059669); }
     .step-2 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
-    .step-3 { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-    .step-4 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .step-3 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .step-4 { background: linear-gradient(135deg, #06b6d4, #0891b2); }
 
-    .step-badge {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        background: rgba(255, 255, 255, 0.1);
-        padding: 4px 10px;
-        border-radius: 20px;
-        color: var(--text-light);
-        margin-bottom: 0.5rem;
-        display: inline-block;
-        font-weight: 600;
-    }
-
-    .step-content h3 {
-        font-size: 1.4rem;
-        color: var(--white);
-        margin-bottom: 0.8rem;
-    }
-
-    .step-content p {
-        font-size: 0.95rem;
-        line-height: 1.6;
+    .step-content h4 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text);
         margin: 0;
     }
+
+    /* Ticket Divider Effect */
+    .receipt-divider {
+        position: relative;
+        height: 40px;
+        display: flex;
+        align-items: center;
+    }
+    .dashed-line {
+        flex: 1;
+        height: 0;
+        border-top: 2px dashed var(--input-border);
+    }
+    .cutout {
+        width: 30px;
+        height: 30px;
+        background-color: var(--bg);
+        border-radius: 50%;
+        position: absolute;
+        top: 5px;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+    .cutout.left { left: -15px; }
+    .cutout.right { right: -15px; }
 
     /* --- About Grid --- */
     .about-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
         gap: 2rem;
     }
 
     .about-card {
         padding: 2.5rem;
-        border-radius: 20px;
         display: flex;
         flex-direction: column;
-    }
-
-    .about-card h4 {
-        font-size: 1.3rem;
-        margin-bottom: 1.5rem;
-        color: var(--white);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        background: var(--glass-bg);
+        position: relative;
+        overflow: hidden;
     }
 
     .creator-profile {
@@ -274,12 +288,12 @@
         box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3);
     }
 
-    .creator-info h3 { margin: 0; font-size: 1.2rem; color: var(--white); }
-    .creator-info p { margin: 0; font-size: 0.85rem; }
+    .creator-name { font-weight: 700; color: var(--text); }
 
     .social-links {
         display: flex;
         gap: 1rem;
+        margin-top: auto;
     }
 
     .social-btn {
@@ -288,58 +302,54 @@
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
-        padding: 10px;
-        border-radius: 10px;
-        color: white;
+        padding: 12px;
+        border-radius: 12px;
+        color: var(--text);
         text-decoration: none;
-        font-weight: 500;
-        transition: all 0.2s;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s;
     }
 
-    .social-btn.linkedin { background: rgba(10, 102, 194, 0.2); border: 1px solid rgba(10, 102, 194, 0.5); }
-    .social-btn.linkedin:hover { background: rgba(10, 102, 194, 0.4); }
-    .social-btn.github { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); }
-    .social-btn.github:hover { background: rgba(255, 255, 255, 0.2); }
+    .linkedin-btn { 
+        background: rgba(10, 102, 194, 0.1); 
+        border: 1px solid rgba(10, 102, 194, 0.3); 
+        color: #60a5fa;
+    }
+    .linkedin-btn:hover { 
+        background: rgba(10, 102, 194, 0.2); 
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .github-btn { 
+        background: var(--input-bg); 
+        border: 1px solid var(--input-border); 
+    }
+    .github-btn:hover { 
+        background: var(--input-focus-bg); 
+        color: var(--text);
+        transform: translateY(-2px);
+    }
 
     .contact-card {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .email-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--white);
-        padding: 12px 20px;
-        border-radius: 12px;
-        text-decoration: none;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.2s;
-        font-weight: 500;
-        z-index: 2;
-    }
-
-    .email-btn:hover {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
+        z-index: 1;
     }
 
     .support-illustration {
         position: absolute;
-        bottom: -20px;
-        right: -10px;
-        font-size: 8rem;
+        bottom: -30px;
+        right: -20px;
+        font-size: 10rem;
         color: rgba(255, 255, 255, 0.02);
-        z-index: 1;
+        z-index: -1;
         transform: rotate(-15deg);
     }
 
     @media (max-width: 768px) {
         .walkthrough-grid, .about-grid { grid-template-columns: 1fr; }
-        .step-card { flex-direction: column; align-items: center; text-align: center; }
+        .step-card { flex-direction: column; text-align: center; align-items: center; }
+        .social-links { flex-direction: column; }
     }
 </style>
 {% endblock %}
