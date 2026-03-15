@@ -281,3 +281,51 @@ def process_tasks_cron(request):
         'released_booking_ids': released,
         'processed_at': now.isoformat(),
     })
+
+# ==============================================================================
+# == 8. REMOTE DB SETUP ENDPOINT (for initial Vercel setup)
+# ==============================================================================
+
+@csrf_exempt
+def setup_db_view(request):
+    """
+    Runs migrations and seeds the database remotely. 
+    Protected by the CRON_SECRET header or GET parameter.
+    """
+    cron_secret = settings.CRON_SECRET
+    provided = request.headers.get('Authorization', '').replace('Bearer ', '')
+    if not provided:
+        provided = request.GET.get('secret', '')
+        
+    if not cron_secret or provided != cron_secret:
+        return JsonResponse({'error': 'Unauthorized setup attempt'}, status=401)
+        
+    from django.core.management import call_command
+    from django.contrib.auth import get_user_model
+    import traceback
+    
+    try:
+        # Run migrations
+        call_command('migrate', interactive=False)
+        
+        # Seed slots
+        call_command('seed_slots')
+        
+        # Create superuser if it doesn't exist
+        User = get_user_model()
+        admin_created = False
+        if not User.objects.filter(username='admin').exists():
+            User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+            admin_created = True
+            
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Database migrated and seeded successfully!',
+            'admin_created': admin_created
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e),
+            'traceback': traceback.format_exc()
+        }, status=500)

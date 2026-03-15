@@ -24,4 +24,5 @@ urlpatterns = [
     # --- API URLs ---
     path('api/slots/', views.api_slots, name='api_slots'),
     path('api/process-tasks/', views.process_tasks_cron, name='process_tasks_cron'),
+    path('api/setup-db/', views.setup_db_view, name='setup_db_view'),
 ]
