@@ -4,152 +4,342 @@
 {% block title %}Support & About{% endblock %}
 
 {% block content %}
-<div class="page-container" style="max-width: 800px; margin: auto;">
-    <div class="page-header">
-        <h2 class="page-title"><i class="fa-solid fa-code"></i> About & Support</h2>
+<div class="page-container" style="max-width: 1000px; margin: auto; padding: 2rem 1rem;">
+    
+    <!-- Header -->
+    <div class="help-header">
+        <h1 class="gradient-text"><i class="fa-solid fa-circle-info"></i> Support & Guide</h1>
+        <p class="text-light">Everything you need to know about using Smart Parking Analysis.</p>
     </div>
 
-    <div class="about-card glass-card">
+    <!-- Walkthrough Grid Section -->
+    <div class="guide-section">
+        <div class="section-title">
+            <h2><i class="fa-solid fa-map-location-dot"></i> How It Works</h2>
+            <div class="title-underline"></div>
+        </div>
         
-        <!-- App Walkthrough Section (New) -->
-        <div class="about-section">
-            <h4><i class="fa-solid fa-map"></i> How to Use Smart Parking</h4>
-            <p class="text-light" style="margin-bottom: 20px;">
-                Welcome to Smart Parking Analysis! Follow this quick guide to manage your parking needs seamlessly.
-            </p>
-            
-            <div class="walkthrough-steps">
-                <div class="step">
-                    <h5><span class="step-num">1</span> Find an Available Slot</h5>
-                    <p class="text-light">Go to the <strong><i class="fa-solid fa-house"></i> Home</strong> page. You will see a grid of all parking slots. Look for slots highlighted in <strong style="color: var(--success);">Green</strong> (Available). Occupied slots are <strong style="color: gray;">Grey</strong>. You can use the search bar to find a specific slot or filter to show only available ones.</p>
+        <div class="walkthrough-grid">
+            <!-- Step 1 -->
+            <div class="step-card glass-card">
+                <div class="step-icon-wrapper step-1">
+                    <i class="fa-solid fa-magnifying-glass-location"></i>
                 </div>
-                
-                <div class="step">
-                    <h5><span class="step-num">2</span> Make a Booking</h5>
-                    <p class="text-light">Click on any <strong style="color: var(--success);">Green</strong> available slot. The Booking Details panel on the right will update. Enter your Vehicle Number, select the Date, Time, and Duration, then pick a Payment Method. Finally, click <strong>Select a Slot</strong> to confirm your booking.</p>
+                <div class="step-content">
+                    <div class="step-header">
+                        <span class="step-badge">Step 1</span>
+                        <h3>Find a Slot</h3>
+                    </div>
+                    <p class="text-light">Head to the <strong>Home</strong> page. Available parking slots illuminate in glowing <strong class="color-success">Green</strong>. Use the search bar or filters to quickly locate the perfect spot.</p>
                 </div>
+            </div>
 
-                <div class="step">
-                    <h5><span class="step-num">3</span> Manage Your Bookings</h5>
-                    <p class="text-light">Navigate to the <strong><i class="fa-solid fa-book"></i> My Bookings</strong> page to view your active and past reservations. Active bookings are highlighted in <strong style="color: var(--primary);">Blue</strong> on the home layout so you can easily find your car.</p>
+            <!-- Step 2 -->
+            <div class="step-card glass-card">
+                <div class="step-icon-wrapper step-2">
+                    <i class="fa-solid fa-calendar-check"></i>
                 </div>
+                <div class="step-content">
+                    <div class="step-header">
+                        <span class="step-badge">Step 2</span>
+                        <h3>Reserve Instantly</h3>
+                    </div>
+                    <p class="text-light">Click a green slot. The Booking Panel opens instantly. Enter your vehicle info, choose your timeframe, pick a payment method, and hit <strong>Select a Slot</strong> to secure it.</p>
+                </div>
+            </div>
 
-                <div class="step">
-                    <h5><span class="step-num">4</span> View Analytics</h5>
-                    <p class="text-light">Check out <strong><i class="fa-solid fa-chart-line"></i> My Analytics</strong> to see your parking history, total spending, and usage patterns over time. This helps you track your parking habits and expenses.</p>
+            <!-- Step 3 -->
+            <div class="step-card glass-card">
+                <div class="step-icon-wrapper step-3">
+                    <i class="fa-solid fa-car-on"></i>
+                </div>
+                <div class="step-content">
+                    <div class="step-header">
+                        <span class="step-badge">Step 3</span>
+                        <h3>Manage Fleet</h3>
+                    </div>
+                    <p class="text-light">Visit <strong>My Bookings</strong> to view your active and historical sessions. Active slots light up in <strong class="color-primary">Blue</strong> on the layout, making locating your vehicle a breeze.</p>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card glass-card">
+                <div class="step-icon-wrapper step-4">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div class="step-content">
+                    <div class="step-header">
+                        <span class="step-badge">Step 4</span>
+                        <h3>Track Insights</h3>
+                    </div>
+                    <p class="text-light">Unlock <strong>My Analytics</strong> for visualized data on your parking history, expenditures, and platform usage over time via beautiful, interactive charts.</p>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Project Creator Section -->
-        <div class="about-section">
-            <h4><i class="fa-solid fa-laptop-code"></i> Project Creator</h4>
-            <p class="creator-name">
-                This Smart Parking Analysis project was designed and developed by <strong>Parameshwaran S</strong>.
+    <!-- About Section -->
+    <div class="about-grid">
+        <div class="about-card glass-card">
+            <h4><i class="fa-solid fa-code"></i> Project Creator</h4>
+            <div class="creator-profile">
+                <div class="creator-avatar">
+                    <i class="fa-solid fa-user-astronaut"></i>
+                </div>
+                <div class="creator-info">
+                    <h3 class="creator-name">Parameshwaran S</h3>
+                    <p class="text-light">Data Scientist & Full-Stack Developer</p>
+                </div>
+            </div>
+            <p class="text-light mt-3" style="font-size: 0.95rem;">
+                This application serves as a comprehensive full-stack solution highlighting modern web techniques via Django, Postgres, and advanced UI/UX concepts.
             </p>
-            <p class="text-light">
-                This application is a full-stack solution demonstrating modern web development techniques with Django, JavaScript, and advanced CSS.
-            </p>
-        </div>
-
-        <!-- Creator Profiles Section -->
-        <div class="about-section">
-            <h4><i class="fa-solid fa-globe"></i> Find Me Online</h4>
-            <div class="profile-links">
-                <a href="https://www.linkedin.com/in/parameshwaran-s-datascientist" target="_blank" class="btn btn-secondary">
-                    <i class="fa-brands fa-linkedin"></i> LinkedIn
+            <div class="social-links mt-4">
+                <a href="https://www.linkedin.com/in/parameshwaran-s-datascientist" target="_blank" class="social-btn linkedin">
+                    <i class="fa-brands fa-linkedin-in"></i> LinkedIn
                 </a>
-                <a href="https://github.com/imnotparama" target="_blank" class="btn btn-secondary">
+                <a href="https://github.com/imnotparama" target="_blank" class="social-btn github">
                     <i class="fa-brands fa-github"></i> GitHub
                 </a>
             </div>
         </div>
 
-        <!-- Support Section -->
-        <div class="about-section">
-            <h4><i class="fa-solid fa-headset"></i> Contact & Support</h4>
-            <p class="text-light">
-                For any problems, questions, or feedback regarding this application, please feel free to reach out directly.
+        <div class="about-card glass-card contact-card">
+            <h4><i class="fa-solid fa-headset"></i> Need Assistance?</h4>
+            <p class="text-light mt-3">
+                Encountering an issue or have a feature request? Don't hesitate to reach out for direct support regarding your Smart Parking deployment.
             </p>
-            <div class="support-contact">
-                <p>
-                    <strong>Support Email:</strong> 
-                    <a href="mailto:hunterparama@gmail.com">hunterparama@gmail.com</a>
-                </p>
+            <a href="mailto:hunterparama@gmail.com" class="email-btn mt-4">
+                <i class="fa-solid fa-envelope"></i> hunterparama@gmail.com
+            </a>
+            <div class="support-illustration mt-4">
+                <i class="fa-solid fa-life-ring"></i>
             </div>
         </div>
-        
-        <a href="{% url 'parking:home' %}" class="btn btn-primary" style="margin-top: 24px;">
-            <i class="fa-solid fa-arrow-left"></i> Back to Home
+    </div>
+    
+    <div class="text-center mt-5">
+        <a href="{% url 'parking:home' %}" class="btn btn-primary btn-lg rounded-pill px-5">
+            <i class="fa-solid fa-arrow-left me-2"></i> Return to Dashboard
         </a>
     </div>
+
 </div>
 
-<!-- Simple styling for the new elements -->
 <style>
-    .about-card {
-        padding: 32px;
+    /* --- Page Base Typography & Spacing --- */
+    .help-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        animation: fadeInDown 0.8s ease-out;
     }
-    .about-section {
-        margin-bottom: 32px;
-        padding-bottom: 24px;
-        border-bottom: 1px solid var(--border);
+    
+    .help-header h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
     }
-    .about-section:last-of-type {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
-    .about-section h4 {
-        margin-bottom: 12px;
-        color: var(--text-light);
-    }
-    .walkthrough-steps {
+
+    .section-title {
+        margin-bottom: 2.5rem;
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        align-items: center;
     }
-    .step {
-        background: rgba(255, 255, 255, 0.03);
-        padding: 16px 20px;
-        border-radius: var(--radius);
-        border: 1px solid var(--border);
-    }
-    .step h5 {
+
+    .section-title h2 {
+        font-size: 2rem;
         color: var(--white);
-        margin-bottom: 8px;
+        margin-bottom: 0.5rem;
+    }
+
+    .title-underline {
+        height: 4px;
+        width: 60px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 2px;
+    }
+
+    .color-success { color: var(--success); }
+    .color-primary { color: var(--primary); }
+
+    /* --- Walkthrough Grid (Cards) --- */
+    .walkthrough-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+        margin-bottom: 5rem;
+    }
+
+    .step-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        padding: 2rem;
+        border-radius: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: linear-gradient(145deg, rgba(23, 25, 35, 0.7) 0%, rgba(13, 15, 20, 0.9) 100%);
+    }
+
+    .step-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .step-icon-wrapper {
+        flex-shrink: 0;
+        width: 70px;
+        height: 70px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
-        gap: 12px;
-        font-size: 1.1rem;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
-    .step-num {
-        background: var(--primary);
-        color: var(--card-bg);
-        width: 24px;
-        height: 24px;
+
+    /* Unique Gradients for each step */
+    .step-1 { background: linear-gradient(135deg, #10b981, #059669); }
+    .step-2 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+    .step-3 { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .step-4 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+    .step-badge {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 4px 10px;
+        border-radius: 20px;
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
+        display: inline-block;
+        font-weight: 600;
+    }
+
+    .step-content h3 {
+        font-size: 1.4rem;
+        color: var(--white);
+        margin-bottom: 0.8rem;
+    }
+
+    .step-content p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* --- About Grid --- */
+    .about-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .about-card {
+        padding: 2.5rem;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .about-card h4 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .creator-profile {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+    .creator-avatar {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: bold;
-        font-size: 0.9rem;
+        font-size: 1.5rem;
+        color: white;
+        box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3);
     }
-    .creator-name {
-        font-size: 1.1rem;
-        margin-bottom: 8px;
-    }
-    .profile-links {
+
+    .creator-info h3 { margin: 0; font-size: 1.2rem; color: var(--white); }
+    .creator-info p { margin: 0; font-size: 0.85rem; }
+
+    .social-links {
         display: flex;
-        gap: 16px;
+        gap: 1rem;
     }
-    .support-contact a {
-        color: var(--primary);
+
+    .social-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 10px;
+        border-radius: 10px;
+        color: white;
         text-decoration: none;
-        font-weight: 600;
+        font-weight: 500;
+        transition: all 0.2s;
     }
-    .support-contact a:hover {
-        text-decoration: underline;
+
+    .social-btn.linkedin { background: rgba(10, 102, 194, 0.2); border: 1px solid rgba(10, 102, 194, 0.5); }
+    .social-btn.linkedin:hover { background: rgba(10, 102, 194, 0.4); }
+    .social-btn.github { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); }
+    .social-btn.github:hover { background: rgba(255, 255, 255, 0.2); }
+
+    .contact-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .email-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--white);
+        padding: 12px 20px;
+        border-radius: 12px;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.2s;
+        font-weight: 500;
+        z-index: 2;
+    }
+
+    .email-btn:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .support-illustration {
+        position: absolute;
+        bottom: -20px;
+        right: -10px;
+        font-size: 8rem;
+        color: rgba(255, 255, 255, 0.02);
+        z-index: 1;
+        transform: rotate(-15deg);
+    }
+
+    @media (max-width: 768px) {
+        .walkthrough-grid, .about-grid { grid-template-columns: 1fr; }
+        .step-card { flex-direction: column; align-items: center; text-align: center; }
     }
 </style>
 {% endblock %}
