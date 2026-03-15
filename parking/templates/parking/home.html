@@ -4,25 +4,34 @@
 {% block title %}Select Your Parking Slot{% endblock %}
 
 {% block content %}
-<div class="page-container">
+<div class="page-container dashboard-container">
     <!-- Header with stats -->
-    <div class="page-header">
-        <div>
-            <h2 class="page-title" style="border: none; padding: 0; margin: 0;">{{ greeting }}</h2>
-            <p class="text-light" style="margin-top: 4px;">Select an available slot to begin your booking.</p>
+    <div class="page-header dashboard-header">
+        <div class="header-text">
+            <h2 class="page-title gradient-text">{{ greeting }}</h2>
+            <p class="text-light">Select an available slot to begin your booking.</p>
         </div>
-        <div class="stat-cards-grid" style="gap: 16px; margin-bottom: 0;">
-            <div class="stat-card-pro" style="padding: 16px;">
-                <div class="stat-icon"><i class="fa-solid fa-car"></i></div>
-                <div class="stat-info"><h4>Total Slots</h4><p>{{ stats.total }}</p></div>
+        <div class="stat-cards-wrapper">
+            <div class="stat-card glass-card hover-lift">
+                <div class="stat-icon-bg bg-cyan"><i class="fa-solid fa-car-side"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Slots</span>
+                    <span class="stat-value">{{ stats.total }}</span>
+                </div>
             </div>
-            <div class="stat-card-pro" style="padding: 16px;">
-                <div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div>
-                <div class="stat-info"><h4>Available</h4><p>{{ stats.available }}</p></div>
+            <div class="stat-card glass-card hover-lift">
+                <div class="stat-icon-bg bg-success"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Available</span>
+                    <span class="stat-value text-success">{{ stats.available }}</span>
+                </div>
             </div>
-            <div class="stat-card-pro" style="padding: 16px;">
-                <div class="stat-icon"><i class="fa-solid fa-chart-pie"></i></div>
-                <div class="stat-info"><h4>Occupancy</h4><p>{{ stats.occupancy }}%</p></div>
+            <div class="stat-card glass-card hover-lift">
+                <div class="stat-icon-bg bg-warning"><i class="fa-solid fa-chart-pie"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Occupancy</span>
+                    <span class="stat-value">{{ stats.occupancy }}%</span>
+                </div>
             </div>
         </div>
     </div>
@@ -30,36 +39,45 @@
     <!-- Main Booking Layout -->
     <div class="booking-page-layout">
         <!-- Left Column: Parking Grid -->
-        <div class="parking-layout-container glass-card">
-            <div class="layout-header">
-                <h3>Parking Layout</h3>
-                <div class="legend">
-                    <span><span class="legend-box available"></span> Available</span>
-                    <span><span class="legend-box occupied"></span> Occupied</span>
-                    <span><span class="legend-box yours"></span> Your Booking</span>
+        <div class="parking-layout-container glass-card premium-shadow">
+            <div class="layout-header-modern">
+                <h3><i class="fa-solid fa-grip"></i> Parking Grid</h3>
+                <div class="legend modern-legend">
+                    <span class="badge badge-success"><span class="legend-dot available"></span> Available</span>
+                    <span class="badge badge-secondary"><span class="legend-dot occupied"></span> Occupied</span>
+                    <span class="badge badge-primary"><span class="legend-dot yours"></span> Yours</span>
                 </div>
             </div>
 
             <!-- Filter Controls -->
-            <div class="filter-controls">
-                <div class="search-wrapper">
+            <div class="filter-controls modern-filters">
+                <div class="search-wrapper modern-search">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="slotSearchInput" placeholder="Search for a slot (e.g., A5)" aria-label="Search for a parking slot">
+                    <input type="text" id="slotSearchInput" placeholder="Search slots (e.g., A5)" aria-label="Search for a parking slot">
                 </div>
-                <div class="filter-checkboxes">
-                    <label><input type="checkbox" id="filterAvailable" name="filter" value="available"> Available Only</label>
-                    <label><input type="checkbox" name="filter" value="handicap" id="filterHandicap"> <i class="fa-solid fa-wheelchair"></i></label>
-                    <label><input type="checkbox" name="filter" value="ev" id="filterEV"> <i class="fa-solid fa-bolt"></i></label>
+                <div class="filter-checkboxes modern-checkboxes">
+                    <label class="filter-chip">
+                        <input type="checkbox" id="filterAvailable" name="filter" value="available">
+                        <span>Available Only</span>
+                    </label>
+                    <label class="filter-chip icon-only" title="Handicap Accessible">
+                        <input type="checkbox" name="filter" value="handicap" id="filterHandicap">
+                        <span><i class="fa-solid fa-wheelchair"></i></span>
+                    </label>
+                    <label class="filter-chip icon-only" title="EV Charging">
+                        <input type="checkbox" name="filter" value="ev" id="filterEV">
+                        <span><i class="fa-solid fa-bolt"></i></span>
+                    </label>
                 </div>
             </div>
 
             <!-- Slot Sections -->
             {% for section_name, slots_in_section in sections.items %}
             <div class="parking-section">
-                <h4>{{ section_name }}</h4>
+                <h4 class="section-label">{{ section_name }}</h4>
                 <div class="slot-grid">
                     {% for slot in slots_in_section %}
-                    <div class="parking-slot
+                    <div class="parking-slot modern-slot
                             {% if slot.status == 'AVAILABLE' %}available
                             {% elif slot.active_booking.user == request.user %}yours
                             {% else %}occupied
@@ -68,9 +86,13 @@
                          data-slot-name="{{ slot.section }}{{ slot.number }}"
                          data-price="{{ slot.price }}"
                          tabindex="0" role="button">
-                        <span class="slot-name">{{ slot.section }}{{ slot.number }}</span>
-                        <span class="slot-price">₹{{ slot.price|floatformat:0 }}</span>
-                        <div class="slot-icons">
+                        
+                        <div class="slot-content">
+                            <span class="slot-name">{{ slot.section }}{{ slot.number }}</span>
+                            <span class="slot-price">₹{{ slot.price|floatformat:0 }}</span>
+                        </div>
+                        
+                        <div class="slot-icons-overlay">
                             {% if slot.is_handicap %}<i class="fa-solid fa-wheelchair" title="Handicap Accessible"></i>{% endif %}
                             {% if slot.is_ev_charging %}<i class="fa-solid fa-bolt" title="EV Charging Available"></i>{% endif %}
                         </div>
@@ -79,70 +101,430 @@
                 </div>
             </div>
             {% empty %}
-            <p class="text-center text-light p-4">No parking slots found.</p>
+            <div class="empty-state glass-card text-center p-5 mt-4">
+                <i class="fa-solid fa-car-burst mb-3" style="font-size: 3rem; color: var(--text-muted);"></i>
+                <h4>No slots found</h4>
+                <p class="text-light">Try adjusting your search or filters.</p>
+            </div>
             {% endfor %}
         </div>
 
         <!-- Right Column: Booking Form -->
-        <div class="booking-form-container">
+        <div class="booking-side-panel">
             {% if user.is_authenticated %}
-                <div class="booking-summary glass-card">
-                    <h3>Booking Summary</h3>
-                    <div class="summary-item"><span>Selected Slot:</span> <strong id="summary-slot">--</strong></div>
-                    <hr>
-                    <div class="summary-item total"><span>Estimated Total:</span> <strong id="summary-amount">₹0.00</strong></div>
+                <div class="booking-summary glass-card highlight-card premium-shadow mb-4">
+                    <div class="summary-header">
+                        <h3><i class="fa-solid fa-receipt"></i> Summary</h3>
+                    </div>
+                    <div class="summary-body">
+                        <div class="summary-row">
+                            <span class="text-light">Selected Slot</span>
+                            <strong id="summary-slot" class="text-white text-end badge bg-dark">--</strong>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-row total-row">
+                            <span class="text-light">Estimated Total</span>
+                            <strong id="summary-amount" class="text-success fs-4">₹0.00</strong>
+                        </div>
+                    </div>
                 </div>
 
-                <form method="post" action="{% url 'parking:home' %}" class="booking-details-form glass-card">
-                    <h3>Booking Details</h3>
+                <form method="post" action="{% url 'parking:home' %}" class="booking-details-form glass-card premium-shadow">
+                    <h3 class="mb-4"><i class="fa-solid fa-list-check"></i> Booking Details</h3>
                     {% csrf_token %}
                     
-                    <!-- Display Non-Field Errors -->
                     {% if form.non_field_errors %}
-                        <div class="form-error-summary" style="background: var(--danger-light); color: var(--danger); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <div class="alert alert-danger modern-alert">
                             {% for error in form.non_field_errors %}
-                                <p class="mb-0">{{ error }}</p>
+                                <p class="mb-0"><i class="fa-solid fa-circle-exclamation me-2"></i>{{ error }}</p>
                             {% endfor %}
                         </div>
                     {% endif %}
                     
                     {{ form.slot_id }}
 
-                    <div class="form-group">
+                    <div class="form-group modern-input">
                         <label for="{{ form.vehicle_number.id_for_label }}">Vehicle Number</label>
-                        {{ form.vehicle_number }}
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-car-license"></i>
+                            {{ form.vehicle_number }}
+                        </div>
                         {% if form.vehicle_number.errors %}<div class="form-error">{{ form.vehicle_number.errors|first }}</div>{% endif %}
                     </div>
 
-                    <div class="form-row" style="display: flex; gap: 1rem;">
-                        <div class="form-group" style="flex: 1;">
+                    <div class="form-row-modern">
+                        <div class="form-group modern-input">
                             <label for="{{ form.parking_date.id_for_label }}">Date</label>
-                            {{ form.parking_date }}
+                            <div class="input-with-icon">
+                                <i class="fa-regular fa-calendar"></i>
+                                {{ form.parking_date }}
+                            </div>
                             {% if form.parking_date.errors %}<div class="form-error">{{ form.parking_date.errors|first }}</div>{% endif %}
                         </div>
-                        <div class="form-group" style="flex: 1;">
+                        <div class="form-group modern-input">
                             <label for="{{ form.start_time.id_for_label }}">Time</label>
-                            {{ form.start_time }}
+                            <div class="input-with-icon">
+                                <i class="fa-regular fa-clock"></i>
+                                {{ form.start_time }}
+                            </div>
                             {% if form.start_time.errors %}<div class="form-error">{{ form.start_time.errors|first }}</div>{% endif %}
                         </div>
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-group modern-input">
                         <label for="{{ form.duration_hours.id_for_label }}">Duration</label>
-                        {{ form.duration_hours }}
+                        <div class="input-with-icon select-icon">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                            {{ form.duration_hours }}
+                        </div>
                         {% if form.duration_hours.errors %}<div class="form-error">{{ form.duration_hours.errors|first }}</div>{% endif %}
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group modern-input mb-4">
                         <label for="{{ form.payment_method.id_for_label }}">Payment Method</label>
-                        {{ form.payment_method }}
+                        <div class="input-with-icon select-icon">
+                            <i class="fa-solid fa-wallet"></i>
+                            {{ form.payment_method }}
+                        </div>
                         {% if form.payment_method.errors %}<div class="form-error">{{ form.payment_method.errors|first }}</div>{% endif %}
                     </div>
                     
-                    <button type="submit" id="book-now-btn" class="btn btn-primary" style="width: 100%;" disabled>Select a Slot</button>
+                    <button type="submit" id="book-now-btn" class="btn btn-primary btn-lg modern-btn w-100" disabled>
+                        <span>Select a Slot First</span>
+                        <i class="fa-solid fa-arrow-right ms-2 transition-icon"></i>
+                    </button>
                 </form>
             {% endif %}
         </div>
     </div>
 </div>
+
+<style>
+    /* --- Dashboard Specific Styles --- */
+    .dashboard-container {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 2.5rem;
+        border: none;
+        padding-bottom: 0;
+    }
+
+    .header-text h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        border: none;
+        padding: 0;
+    }
+
+    /* --- Premium Stat Cards --- */
+    .stat-cards-wrapper {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        padding: 1.2rem 1.5rem;
+        min-width: 200px;
+        background: rgba(20, 24, 34, 0.6);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 16px;
+    }
+
+    .stat-icon-bg {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    .bg-cyan { background: linear-gradient(135deg, #06b6d4, #0891b2); box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3); }
+    .bg-success { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+    .bg-warning { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+
+    .stat-info {
+        display: flex;
+        flex-direction: column;
+    }
+    .stat-label {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--white);
+        line-height: 1.2;
+    }
+
+    /* --- Premium Layout Updates --- */
+    .premium-shadow {
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
+        border: 1px solid rgba(255,255,255,0.05) !important;
+        background: linear-gradient(145deg, rgba(20, 24, 34, 0.8), rgba(15, 18, 25, 0.9)) !important;
+        border-radius: 20px !important;
+    }
+
+    .layout-header-modern {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .layout-header-modern h3 { margin: 0; font-size: 1.4rem; color: var(--white); }
+
+    .modern-legend {
+        display: flex;
+        gap: 1rem;
+    }
+    .badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        background: rgba(255,255,255,0.05);
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    /* --- Modern Filters --- */
+    .modern-filters {
+        background: rgba(0,0,0,0.2);
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.03);
+    }
+    
+    .modern-search {
+        background: rgba(255,255,255,0.03) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        border-radius: 10px !important;
+        transition: all 0.3s;
+    }
+    .modern-search:focus-within {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+        background: rgba(255,255,255,0.06) !important;
+    }
+
+    /* Filter Chips */
+    .modern-checkboxes { gap: 10px; }
+    .filter-chip {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+    .filter-chip input { display: none; }
+    .filter-chip span {
+        padding: 8px 16px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+        color: var(--text-light);
+    }
+    .filter-chip.icon-only span {
+        padding: 8px 12px;
+        font-size: 1rem;
+    }
+    .filter-chip input:checked + span {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+        box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+    }
+
+    /* --- Modern Slots --- */
+    .section-label {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .modern-slot {
+        aspect-ratio: 16/9;
+        height: auto;
+        padding: 1rem;
+        border-radius: 14px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .slot-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 2;
+    }
+    
+    .modern-slot .slot-name { font-size: 1.4rem; font-weight: 800; }
+    .modern-slot .slot-price {
+        font-size: 0.8rem;
+        background: rgba(0,0,0,0.3);
+        padding: 3px 8px;
+        border-radius: 10px;
+        margin-top: 5px;
+    }
+
+    .slot-icons-overlay {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        display: flex;
+        gap: 5px;
+        font-size: 0.75rem;
+        opacity: 0.7;
+    }
+
+    /* Slot States */
+    .modern-slot.available {
+        background: linear-gradient(145deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: var(--success);
+    }
+    .modern-slot.available:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        border-color: var(--success);
+        background: rgba(16, 185, 129, 0.15);
+    }
+    .modern-slot.occupied {
+        background: rgba(255,255,255,0.02);
+        border: 1px dashed rgba(255,255,255,0.1);
+        opacity: 0.6;
+    }
+    
+    /* --- Modern Side Panel & Forms --- */
+    .summary-header {
+        margin-bottom: 1.5rem;
+    }
+    .summary-header h3 { margin: 0; font-size: 1.2rem; }
+    
+    .summary-body {
+        background: rgba(0,0,0,0.2);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .summary-divider {
+        height: 1px;
+        background: rgba(255,255,255,0.1);
+        margin: 1rem 0;
+    }
+    .total-row {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    /* Inputs */
+    .modern-input label {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+    
+    .input-with-icon {
+        position: relative;
+    }
+    .input-with-icon i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        z-index: 2;
+    }
+    .input-with-icon input, 
+    .input-with-icon select {
+        padding-left: 45px !important;
+        background: rgba(0,0,0,0.15) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        border-radius: 12px !important;
+        height: 50px;
+        transition: all 0.3s;
+    }
+    .input-with-icon input:focus, 
+    .input-with-icon select:focus {
+        background: rgba(255,255,255,0.05) !important;
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    }
+
+    .form-row-modern {
+        display: flex;
+        gap: 1rem;
+    }
+    .form-row-modern > div { flex: 1; }
+
+    .modern-btn {
+        height: 55px;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border: none;
+        transition: all 0.3s;
+    }
+    .modern-btn:disabled {
+        background: rgba(255,255,255,0.1);
+        color: var(--text-muted);
+    }
+    .modern-btn:not(:disabled):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(139, 92, 246, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .dashboard-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+        .stat-cards-wrapper { width: 100%; flex-wrap: wrap; }
+        .stat-card { flex: 1; }
+    }
+</style>
 {% endblock %}
